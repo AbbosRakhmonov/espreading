@@ -2,13 +2,21 @@ const User = require("../models/User");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 
+/**
+ * Sends a response with a specified user object and sets a cookie with the token.
+ *
+ * @param {Object} res - The response object.
+ * @param {string} token - The JWT token to be set as a cookie.
+ * @param {Object} user - The user object to be sent in the response.
+ */
+
 const sendWithCookie = (res, token, user) => {
   return res
     .status(200)
     .cookie("espreading", token, {
       // 15 days
       httpOnly: true,
-      maxAge: 15 * 24 * 60 * 60 * 1000,
+      maxAge: 1 * 24 * 60 * 60 * 1000,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
     })
@@ -56,7 +64,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   }).select("+password");
 
   if (!user || !(await user.matchPassword(password))) {
-    return next(new ErrorResponse("Email or password is incorrect", 401));
+    return next(new ErrorResponse("Email or password is incorrect", 500));
   }
 
   let token = user.getSignedJwtToken();

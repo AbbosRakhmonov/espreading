@@ -1,8 +1,16 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useError } from "../contexts/ErrorContext";
+import { checkReadingCompleted } from "../utils/api";
 import { lessons } from "../utils/lessons";
 
 const ReadingTest = () => {
+  const { showError } = useError();
+  const [data, setData] = useState({
+    completed: false,
+    score: 0,
+    answers: {},
+  });
   const { id, categoryId, readingId } = useParams();
 
   const lesson = lessons.find((l) => l.id == id);
@@ -23,8 +31,36 @@ const ReadingTest = () => {
     return <div>Reading not found</div>;
   }
 
+  useEffect(() => {
+    if (reading) {
+      const fetchReadings = async () => {
+        try {
+          const { data } = await checkReadingCompleted(reading.id);
+          if (data.completed) {
+            setData(data);
+          }
+        } catch (error) {
+          showError(
+            `Failed to check completion status for reading: ${reading.title}`
+          );
+        }
+      };
+
+      fetchReadings();
+      document.title = reading.title;
+    }
+  }, [reading]);
+
   return (
-    <Suspense fallback={<div>Loading...</div>}>{<reading.reading />}</Suspense>
+    <Suspense fallback={<div>Loading...</div>}>
+      {
+        <reading.reading
+          completed={data.completed}
+          score={data.score}
+          answers={data.answers}
+        />
+      }
+    </Suspense>
   );
 };
 

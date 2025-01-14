@@ -15,6 +15,8 @@ const LinkCard = ({
   title = "",
   image = "/images/cards/default.avif",
   href = "#",
+  completed = false,
+  score = 0,
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -33,7 +35,29 @@ const LinkCard = ({
         },
       }}
     >
-      <CardActionArea component={RouterLink} to={href}>
+      <CardActionArea
+        component={RouterLink}
+        to={href}
+        sx={{
+          position: "relative",
+          // ribbon for completed
+          "&:after": {
+            content: "'completed'",
+            position: "absolute",
+            top: 0,
+            right: 0,
+            backgroundColor: "success.main",
+            color: "common.white",
+            padding: "0.25rem 0.5rem",
+            fontSize: "0.75rem",
+            fontWeight: "bold",
+            textTransform: "uppercase",
+            zIndex: 1,
+            borderRadius: "0 0 0 0.25rem",
+            display: completed ? "block" : "none",
+          },
+        }}
+      >
         <CardMedia sx={{ height: 140, objectFit: "cover" }} image={image} />
         <CardContent>
           <Typography
@@ -49,6 +73,11 @@ const LinkCard = ({
           <Typography component={"p"} variant="body2" color="text.secondary">
             {text}
           </Typography>
+          {completed && (
+            <Typography component={"p"} variant="body2" color="success.main">
+              Score: {score}
+            </Typography>
+          )}
         </CardContent>
       </CardActionArea>
     </Card>

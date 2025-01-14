@@ -19,12 +19,21 @@ import {
   useTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import CorrectAnswer from "../../../../components/CorrectAnswer";
 import CustomAudio from "../../../../components/CustomAudio";
 import { submitForm } from "../../../../features/SubmitForm";
 
+const answer = {
+  emma: 1,
+  carlos: 2,
+  fatima: 3,
+  liam: 4,
+  sofia: 5,
+};
+
 const CustomSelect = ({ name = "", disabled = false, value = "" }) => {
   return (
-    <FormControl fullWidth size="small" disabled={disabled}>
+    <FormControl fullWidth size="small" disabled={disabled} error={!!value}>
       <InputLabel id="demo-simple-select-label">
         Please select a situation
       </InputLabel>
@@ -35,6 +44,7 @@ const CustomSelect = ({ name = "", disabled = false, value = "" }) => {
         label="Please select a situation"
         name={name}
         disabled={disabled}
+        inputProps={{ "aria-label": "Without label" }}
       >
         <MenuItem value={1}>Denial</MenuItem>
         <MenuItem value={2}>Anger</MenuItem>
@@ -52,7 +62,7 @@ const formatTime = (seconds) => {
   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 };
 
-function First() {
+function First({ completed = false, score = 0, answers = {} }) {
   const [loading, setLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0); // 60 minutes
   const theme = useTheme();
@@ -121,7 +131,7 @@ function First() {
       <Typography
         variant="body1"
         sx={{
-          mb: 2,
+          mb: 3,
         }}
       >
         Total possible score: <b>5 points</b> (1 point per situation).
@@ -439,40 +449,80 @@ function First() {
                       <TableCell component="th" scope="row">
                         Emma
                       </TableCell>
-                      <TableCell>
-                        <CustomSelect name="emma" disabled={loading} />
+                      <TableCell sx={{ display: "flex" }}>
+                        <CustomSelect
+                          name="emma"
+                          disabled={loading || completed}
+                          key={"emma"}
+                          value={completed ? answers.emma : ""}
+                        />
+                        {completed && answers.emma == answer.emma && (
+                          <CorrectAnswer />
+                        )}
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell component="th" scope="row">
                         Carlos
                       </TableCell>
-                      <TableCell>
-                        <CustomSelect name="carlos" disabled={loading} />
+                      <TableCell sx={{ display: "flex" }}>
+                        <CustomSelect
+                          name="carlos"
+                          disabled={loading || completed}
+                          key={"carlos"}
+                          value={completed ? answers.carlos : ""}
+                        />
+                        {completed && answers.carlos == answer.carlos && (
+                          <CorrectAnswer />
+                        )}
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell component="th" scope="row">
                         Fatima
                       </TableCell>
-                      <TableCell>
-                        <CustomSelect name="fatima" disabled={loading} />
+                      <TableCell sx={{ display: "flex" }}>
+                        <CustomSelect
+                          name="fatima"
+                          disabled={loading || completed}
+                          key={"fatima"}
+                          value={completed ? answers.fatima : ""}
+                        />
+                        {completed && answers.fatima == answer.fatima && (
+                          <CorrectAnswer />
+                        )}
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell component="th" scope="row">
                         Liam
                       </TableCell>
-                      <TableCell>
-                        <CustomSelect name="liam" disabled={loading} />
+                      <TableCell sx={{ display: "flex" }}>
+                        <CustomSelect
+                          name="liam"
+                          disabled={loading || completed}
+                          key={"liam"}
+                          value={completed ? answers.liam : ""}
+                        />
+                        {completed && answers.liam == answer.liam && (
+                          <CorrectAnswer />
+                        )}
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell component="th" scope="row">
                         Sofia
                       </TableCell>
-                      <TableCell>
-                        <CustomSelect name="sofia" disabled={loading} />
+                      <TableCell sx={{ display: "flex" }}>
+                        <CustomSelect
+                          name="sofia"
+                          disabled={loading || completed}
+                          key={"sofia"}
+                          value={completed ? answers.sofia : ""}
+                        />
+                        {completed && answers.sofia == answer.sofia && (
+                          <CorrectAnswer />
+                        )}
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -481,16 +531,24 @@ function First() {
               <Box
                 sx={{
                   textAlign: "center",
+                  mt: 4,
                 }}
               >
+                <Typography
+                  variant="h6"
+                  component="h2"
+                  align="center"
+                  sx={{ mb: 2 }}
+                  color="success.main"
+                  gutterBottom
+                >
+                  Score: {score}
+                </Typography>
                 <Button
-                  sx={{
-                    mt: 4,
-                  }}
                   variant="contained"
                   color="primary"
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || completed}
                 >
                   Submit Answers
                 </Button>

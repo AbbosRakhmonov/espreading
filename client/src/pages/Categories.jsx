@@ -18,7 +18,11 @@ const Categories = () => {
         sx={{
           display: "grid",
           flexWrap: "wrap",
-          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+          gridTemplateColumns: {
+            xs: "repeat(1, 1fr)",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(3, 1fr)",
+          },
           gap: "2rem",
         }}
       >

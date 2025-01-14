@@ -14,13 +14,17 @@ const ReadingSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  answers: [],
+  answers: {},
+  score: {
+    type: Number,
+    default: 0,
+  },
   completedAt: {
     type: Date,
     default: Date.now,
   },
 });
 
-ReadingCompletionSchema.index({ user: 1, reading: 1 }, { unique: true });
+ReadingSchema.index({ user: 1, reading: 1 }, { unique: true });
 
 module.exports = mongoose.model("Reading", ReadingSchema);

@@ -10,7 +10,7 @@ exports.protect = asyncHandler(async (req, _, next) => {
 
   // Make sure token exists
   if (!token) {
-    return next(new ErrorResponse("Not authorized to access this route", 401));
+    return next(new ErrorResponse("Not authorized to access this route", 500));
   }
 
   try {
@@ -20,13 +20,13 @@ exports.protect = asyncHandler(async (req, _, next) => {
     const user = await User.findById(decoded.id);
 
     if (!user) {
-      return next(new ErrorResponse("User not found", 401));
+      return next(new ErrorResponse("User not found", 500));
     }
 
     req.user = user;
     return next();
   } catch (err) {
-    return next(new ErrorResponse("Token expired", 401));
+    return next(new ErrorResponse("Token expired", 500));
   }
 });
 

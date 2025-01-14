@@ -10,6 +10,7 @@ const bodyParser = require("body-parser");
 require("dotenv").config();
 
 const auth = require("./routes/auth");
+const reading = require("./routes/reading");
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/api/v1/auth", auth);
+app.use("/api/v1/readings", reading);
 
 // error handler
 app.use(errorHandler);

@@ -1,36 +1,36 @@
 const ErrorResponse = require("../utils/errorResponse");
 
 const errorHandler = (err, req, res, next) => {
-  console.log("ishladim");
-
   let error = { ...err };
 
   error.message = err.message;
 
-  // Log to console for dev
-  console.log(err.stack);
-
-  // Mongoose bad ObjectId
+  // Handle Mongoose bad ObjectId
   if (err.name === "CastError") {
-    const message = `Resource not found`;
-    error = new ErrorResponse(message, 404);
+    error = new ErrorResponse("Resource not found", 404);
   }
 
-  // Mongoose duplicate key
+  // Handle Mongoose duplicate key
   if (err.code === 11000) {
-    let keys = Object.keys(err.keyPattern).join(", ");
-    const message = `The ${keys} field must be unique`;
+    const keys = Object.keys(err.keyPattern).join(", ");
+    error = new ErrorResponse(`The ${keys} field must be unique`, 400);
+  }
+
+  // Handle Mongoose validation error
+  if (err.name === "ValidationError") {
+    error.message = Object.values(err.errors || {})
+      .map(({ message }) => message)
+      .join(", ");
     error = new ErrorResponse(message, 400);
   }
 
-  // Mongoose validation error
-  if (err.name === "ValidationError") {
-    const message = Object.values(err.errors).map((val) => val.message);
-    error = new ErrorResponse(message, 400);
+  if (error === undefined) {
+    error = new ErrorResponse("An unknown error occurred", 500);
   }
+
   res.status(error.statusCode || 500).json({
     success: false,
-    message: error.message.split(",")[0] || "Server Error",
+    message: error.message,
   });
 };
 

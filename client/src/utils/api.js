@@ -8,4 +8,22 @@ const api = axios.create({
   withCredentials: true, // This is important for sending cookies with requests
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    // If the error is due to an unauthorized access (possibly expired cookie)
+    if (error.response.status === 401) {
+      window.location.href = "/";
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+const checkReadingCompleted = async (readingId) => {
+  return await api.get(`/readings/${readingId}/completed`);
+};
+
 export default api;
+
+export { checkReadingCompleted };
