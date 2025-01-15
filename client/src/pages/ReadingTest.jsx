@@ -5,6 +5,7 @@ import { checkReadingCompleted } from "../utils/api";
 import { lessons } from "../utils/lessons";
 
 const ReadingTest = () => {
+  const [loading, setLoading] = useState(true);
   const { showError } = useError();
   const [data, setData] = useState({
     completed: false,
@@ -35,6 +36,7 @@ const ReadingTest = () => {
     if (reading) {
       const fetchReadings = async () => {
         try {
+          setLoading(true);
           const { data } = await checkReadingCompleted(reading.id);
           if (data.completed) {
             setData(data);
@@ -43,6 +45,8 @@ const ReadingTest = () => {
           showError(
             `Failed to check completion status for reading: ${reading.title}`
           );
+        } finally {
+          setLoading(false);
         }
       };
 
@@ -53,13 +57,14 @@ const ReadingTest = () => {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      {
+      {!loading && (
         <reading.reading
           completed={data.completed}
           score={data.score}
           answers={data.answers}
+          time={data.time || 0}
         />
-      }
+      )}
     </Suspense>
   );
 };

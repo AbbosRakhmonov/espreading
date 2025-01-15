@@ -19,9 +19,11 @@ import {
   useTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import CorrectAnswer from "../../../../components/CorrectAnswer";
 import CustomAudio from "../../../../components/CustomAudio";
-import { submitForm } from "../../../../features/SubmitForm";
+import { useError } from "../../../../contexts/ErrorContext";
+import { completeReading } from "../../../../utils/api";
 
 const answer = {
   emma: 1,
@@ -31,25 +33,30 @@ const answer = {
   sofia: 5,
 };
 
-const CustomSelect = ({ name = "", disabled = false, value = "" }) => {
+const CustomSelect = ({
+  name = "",
+  disabled = false,
+  value = "",
+  error = false,
+}) => {
   return (
-    <FormControl fullWidth size="small" disabled={disabled} error={!!value}>
+    <FormControl fullWidth size="small" disabled={disabled} error={error}>
       <InputLabel id="demo-simple-select-label">
-        Please select a situation
+        {error ? "Incorrect Answer" : "Please select a situation"}
       </InputLabel>
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"
         defaultValue={value}
-        label="Please select a situation"
+        label={error ? "Incorrect Answer" : "Please select a situation"}
         name={name}
         disabled={disabled}
         inputProps={{ "aria-label": "Without label" }}
       >
-        <MenuItem value={1}>Denial</MenuItem>
+        <MenuItem value={4}>Depression</MenuItem>
         <MenuItem value={2}>Anger</MenuItem>
         <MenuItem value={3}>Bargaining</MenuItem>
-        <MenuItem value={4}>Depression</MenuItem>
+        <MenuItem value={1}>Denial</MenuItem>
         <MenuItem value={5}>Acceptance</MenuItem>
       </Select>
     </FormControl>
@@ -62,30 +69,33 @@ const formatTime = (seconds) => {
   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 };
 
-function First({ completed = false, score = 0, answers = {} }) {
+function First({ completed = false, score = 0, answers = {}, time = 0 }) {
   const [loading, setLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(0); // 60 minutes
+  const [timeLeft, setTimeLeft] = useState(time); // 60 minutes
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const { readingId } = useParams();
+  const { showError } = useError();
 
   useEffect(() => {
+    if (completed) return;
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => prevTime + 1);
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [completed]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
       const formData = new FormData(e.target);
-      formData.append("id", 1);
       formData.append("time", timeLeft);
-      await submitForm(formData);
+      await completeReading(readingId, formData);
+      window.location.reload();
     } catch (error) {
-      console.error("Failed to log in", error);
+      showError(error?.response?.data?.message || error.message);
     } finally {
       setLoading(false);
     }
@@ -368,7 +378,7 @@ function First({ completed = false, score = 0, answers = {} }) {
               }}
             >
               <Typography variant={"h6"} gutterBottom>
-                Situation 4
+                Situation 1
               </Typography>
               <Typography variant="body2" gutterBottom>
                 Liam feels empty and struggles to get out of bed after his
@@ -378,7 +388,7 @@ function First({ completed = false, score = 0, answers = {} }) {
               </Typography>
               <CustomAudio audioUrl="/audios/liam.wav" type="audio/wav" />
               <Typography variant={"h6"} gutterBottom>
-                Situation 5
+                Situation 2
               </Typography>
               <Typography variant="body2" gutterBottom>
                 Sofia lost her best friend two years ago. Though she still
@@ -388,7 +398,7 @@ function First({ completed = false, score = 0, answers = {} }) {
               </Typography>
               <CustomAudio audioUrl="/audios/sofia.wav" type="audio/wav" />
               <Typography variant={"h6"} gutterBottom>
-                Situation 1
+                Situation 3
               </Typography>
               <Typography variant="body2" gutterBottom>
                 Emma recently lost her husband in an accident. She often feels
@@ -398,7 +408,7 @@ function First({ completed = false, score = 0, answers = {} }) {
               </Typography>
               <CustomAudio audioUrl="/audios/emma.wav" type="audio/wav" />
               <Typography variant={"h6"} gutterBottom>
-                Situation 2
+                Situation 4
               </Typography>
               <Typography variant="body2" gutterBottom>
                 Carlos lost his younger sister to illness. He feels frustrated
@@ -408,7 +418,7 @@ function First({ completed = false, score = 0, answers = {} }) {
               </Typography>
               <CustomAudio audioUrl="/audios/carlos.wav" type="audio/wav" />
               <Typography variant={"h6"} gutterBottom>
-                Situation 3
+                Situation 5
               </Typography>
               <Typography variant="body2" gutterBottom>
                 After losing her mother, Fatima spends a lot of time wondering
@@ -447,22 +457,6 @@ function First({ completed = false, score = 0, answers = {} }) {
                   <TableBody>
                     <TableRow>
                       <TableCell component="th" scope="row">
-                        Emma
-                      </TableCell>
-                      <TableCell sx={{ display: "flex" }}>
-                        <CustomSelect
-                          name="emma"
-                          disabled={loading || completed}
-                          key={"emma"}
-                          value={completed ? answers.emma : ""}
-                        />
-                        {completed && answers.emma == answer.emma && (
-                          <CorrectAnswer />
-                        )}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
                         Carlos
                       </TableCell>
                       <TableCell sx={{ display: "flex" }}>
@@ -471,24 +465,9 @@ function First({ completed = false, score = 0, answers = {} }) {
                           disabled={loading || completed}
                           key={"carlos"}
                           value={completed ? answers.carlos : ""}
+                          error={completed && answers.carlos != answer.carlos}
                         />
                         {completed && answers.carlos == answer.carlos && (
-                          <CorrectAnswer />
-                        )}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
-                        Fatima
-                      </TableCell>
-                      <TableCell sx={{ display: "flex" }}>
-                        <CustomSelect
-                          name="fatima"
-                          disabled={loading || completed}
-                          key={"fatima"}
-                          value={completed ? answers.fatima : ""}
-                        />
-                        {completed && answers.fatima == answer.fatima && (
                           <CorrectAnswer />
                         )}
                       </TableCell>
@@ -503,8 +482,26 @@ function First({ completed = false, score = 0, answers = {} }) {
                           disabled={loading || completed}
                           key={"liam"}
                           value={completed ? answers.liam : ""}
+                          error={completed && answers.liam != answer.liam}
                         />
                         {completed && answers.liam == answer.liam && (
+                          <CorrectAnswer />
+                        )}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row">
+                        Fatima
+                      </TableCell>
+                      <TableCell sx={{ display: "flex" }}>
+                        <CustomSelect
+                          name="fatima"
+                          disabled={loading || completed}
+                          key={"fatima"}
+                          value={completed ? answers.fatima : ""}
+                          error={completed && answers.fatima != answer.fatima}
+                        />
+                        {completed && answers.fatima == answer.fatima && (
                           <CorrectAnswer />
                         )}
                       </TableCell>
@@ -519,8 +516,26 @@ function First({ completed = false, score = 0, answers = {} }) {
                           disabled={loading || completed}
                           key={"sofia"}
                           value={completed ? answers.sofia : ""}
+                          error={completed && answers.sofia != answer.sofia}
                         />
                         {completed && answers.sofia == answer.sofia && (
+                          <CorrectAnswer />
+                        )}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell component="th" scope="row">
+                        Emma
+                      </TableCell>
+                      <TableCell sx={{ display: "flex" }}>
+                        <CustomSelect
+                          name="emma"
+                          disabled={loading || completed}
+                          key={"emma"}
+                          value={completed ? answers.emma : ""}
+                          error={completed && answers.emma != answer.emma}
+                        />
+                        {completed && answers.emma == answer.emma && (
                           <CorrectAnswer />
                         )}
                       </TableCell>
@@ -534,16 +549,18 @@ function First({ completed = false, score = 0, answers = {} }) {
                   mt: 4,
                 }}
               >
-                <Typography
-                  variant="h6"
-                  component="h2"
-                  align="center"
-                  sx={{ mb: 2 }}
-                  color="success.main"
-                  gutterBottom
-                >
-                  Score: {score}
-                </Typography>
+                {completed && (
+                  <Typography
+                    variant="h6"
+                    component="h2"
+                    align="center"
+                    sx={{ mb: 2 }}
+                    color="success.main"
+                    gutterBottom
+                  >
+                    Score: {score} / 5
+                  </Typography>
+                )}
                 <Button
                   variant="contained"
                   color="primary"

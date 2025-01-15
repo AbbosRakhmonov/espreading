@@ -1,5 +1,11 @@
-import LessonFirstReading from "../pages/Lessons/First/Readings/First";
-import LessonFirstSequencing from "../pages/Lessons/First/Readings/Sequencing";
+import { lazy } from "react";
+
+const LessonFirstReading = lazy(() =>
+  import("../pages/Lessons/First/Readings/First")
+);
+const LessonFirstSequencing = lazy(() =>
+  import("../pages/Lessons/First/Readings/Sequencing")
+);
 
 export const lessons = [
   {
@@ -34,7 +40,7 @@ export const lessons = [
         materials: 1,
         readings: [
           {
-            id: 1,
+            id: 2,
             title: "Conversation – Bargaining Stage",
             questions: 7,
             reading: LessonFirstSequencing,

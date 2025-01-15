@@ -6,7 +6,9 @@ const {
 } = require("../controllers/student");
 const { protect } = require("../middleware/auth");
 
-router.get("/:id/completed", protect, checkReadingCompleted);
-router.post("/:id", protect, submitReadingAnswers);
+router
+  .route("/:id/completed")
+  .get(protect, checkReadingCompleted)
+  .post(protect, submitReadingAnswers);
 
 module.exports = router;

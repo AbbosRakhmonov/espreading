@@ -19,6 +19,10 @@ const ReadingSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  completed: {
+    type: Boolean,
+    default: true,
+  },
   completedAt: {
     type: Date,
     default: Date.now,
