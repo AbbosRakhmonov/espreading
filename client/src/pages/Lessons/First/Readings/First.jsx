@@ -24,6 +24,7 @@ import CorrectAnswer from "../../../../components/CorrectAnswer";
 import CustomAudio from "../../../../components/CustomAudio";
 import { useError } from "../../../../contexts/ErrorContext";
 import { completeReading } from "../../../../utils/api";
+import { formatTime } from "../../../../utils/formatTime";
 
 const answer = {
   emma: 1,
@@ -61,12 +62,6 @@ const CustomSelect = ({
       </Select>
     </FormControl>
   );
-};
-
-const formatTime = (seconds) => {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 };
 
 function First({ completed = false, score = 0, answers = {}, time = 0 }) {

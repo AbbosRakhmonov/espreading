@@ -21,7 +21,7 @@ const errorHandler = (err, req, res, next) => {
     error.message = Object.values(err.errors || {})
       .map(({ message }) => message)
       .join(", ");
-    error = new ErrorResponse(message, 400);
+    error = new ErrorResponse(error.message, 400);
   }
 
   if (error === undefined) {
