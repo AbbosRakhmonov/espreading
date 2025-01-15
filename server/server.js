@@ -7,7 +7,13 @@ const errorHandler = require("./middleware/error");
 const connectDB = require("./config/db");
 const mongoSanitize = require("express-mongo-sanitize");
 const bodyParser = require("body-parser");
-require("dotenv").config();
+
+let nevPath =
+  process.env.NODE_ENV === "production" ? ".env.production" : ".env";
+
+require("dotenv").config({
+  path: nevPath,
+});
 
 const auth = require("./routes/auth");
 const reading = require("./routes/reading");
