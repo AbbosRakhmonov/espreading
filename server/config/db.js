@@ -1,6 +1,8 @@
 const { connect } = require("mongoose");
 
 module.exports = async () => {
+  console.log(process.env.MONGO_PASS);
+
   try {
     let mongoURI =
       process.env.NODE_ENV === "production"
