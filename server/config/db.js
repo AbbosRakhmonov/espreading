@@ -7,8 +7,6 @@ module.exports = async () => {
         ? `mongodb+srv://abbosraxmonov2001:${process.env.MONGO_PASS}@espreading.fzesn.mongodb.net/?retryWrites=true&w=majority&appName=espreading`
         : process.env.MONGO_URI;
 
-    console.log(mongoURI);
-
     return await connect(mongoURI);
   } catch (error) {
     console.log(`Error: ${error.message}`);
