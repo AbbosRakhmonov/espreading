@@ -43,6 +43,12 @@ exports.register = asyncHandler(async (req, res, next) => {
     };
   }
 
+  const checkAlreadyExists = await User.findOne({ email: body.email });
+
+  if (checkAlreadyExists) {
+    return next(new ErrorResponse("User with this email already exists", 400));
+  }
+
   const user = await User.create(body);
   const userWithoutPassword = user.toObject();
   delete userWithoutPassword.password;
