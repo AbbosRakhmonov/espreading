@@ -137,7 +137,7 @@ function AppRoutes() {
           }
         />
         <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/unauthorized" />} />
       </Routes>
     </BgVideoLayout>
   );
