@@ -20,7 +20,7 @@ const Loader = () => {
         overflow: "hidden",
       }}
     >
-      <video autoplay muted loop playsinline>
+      <video autoPlay muted loop playsInline>
         <source src="/loader.webm" type="video/webm" />
       </video>
       <h6>ESPREADING.UZ</h6>

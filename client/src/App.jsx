@@ -79,7 +79,7 @@ function AppRoutes() {
   const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (loading) return null;
+    if (loading) return;
     const startElement = document.getElementById("start");
     if (startElement) {
       startElement.remove();
