@@ -62,7 +62,8 @@ app.use(errorHandler);
       )
     );
   } catch (error) {
-    console.error(`Error: ${error.message}`);
+    console.log(error);
+    console.log(`Error: ${error.message}`);
     process.exit(1);
   }
 })();
