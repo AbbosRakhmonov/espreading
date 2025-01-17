@@ -36,7 +36,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     body = {
       fullName: "Admin",
       email: "admin@espreading.uz",
-      passwrod: "123456#",
+      password: "123456##",
       role: "admin",
       university: "ESP Reading",
     };
