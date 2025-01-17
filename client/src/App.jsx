@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import ProtectedRoute from ".//ProtectedRoute";
 import GlobalErrorDisplay from "./components/GlobalErrorDisplay";
+import Loader from "./components/Loader";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { ErrorProvider } from "./contexts/ErrorContext";
 import Categories from "./pages/Categories";
@@ -78,7 +79,7 @@ function AppRoutes() {
   const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (loading) return;
+    if (loading) return null;
     const startElement = document.getElementById("start");
     if (startElement) {
       startElement.remove();
@@ -86,7 +87,7 @@ function AppRoutes() {
   }, [loading]);
 
   if (loading) {
-    return null;
+    return <Loader />;
   }
 
   return (
