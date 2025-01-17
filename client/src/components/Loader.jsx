@@ -15,9 +15,12 @@ const Loader = () => {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
         background: "linear-gradient(135deg, #e8f5e9, #c8e6c9)",
         overflow: "hidden",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        zIndex: 90,
       }}
     >
       <video autoPlay muted loop playsInline>

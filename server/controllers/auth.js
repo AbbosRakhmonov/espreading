@@ -14,11 +14,12 @@ const sendWithCookie = (res, token, user) => {
   return res
     .status(200)
     .cookie("espreading", token, {
-      // 15 days
       httpOnly: true,
       maxAge: 1 * 24 * 60 * 60 * 1000,
+      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+      path: "/",
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     })
     .json(user);
 };

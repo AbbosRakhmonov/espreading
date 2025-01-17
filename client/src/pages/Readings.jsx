@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import LinkCard from "../components/LinkCard";
+import { useError } from "../contexts/ErrorContext";
 import { checkReadingCompleted } from "../utils/api";
 import { categoris } from "../utils/generateCategories";
 import { lessons } from "../utils/lessons";
@@ -11,6 +12,7 @@ const Readings = () => {
   const [updatedReadings, setUpdatedReadings] = useState([]);
   const { id, categoryId } = useParams();
   const lesson = lessons.find((l) => l.id == id);
+  const { showError } = useError();
 
   if (!lesson) {
     return <div>Lesson not found</div>;
