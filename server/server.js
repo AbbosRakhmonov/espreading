@@ -8,12 +8,7 @@ const connectDB = require("./config/db");
 const mongoSanitize = require("express-mongo-sanitize");
 const bodyParser = require("body-parser");
 
-let nevPath =
-  process.env.NODE_ENV === "production" ? ".env.production" : ".env";
-
-require("dotenv").config({
-  path: nevPath,
-});
+require("dotenv").config();
 
 const auth = require("./routes/auth");
 const reading = require("./routes/reading");
