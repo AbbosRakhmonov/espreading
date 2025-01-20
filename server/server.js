@@ -7,6 +7,7 @@ const errorHandler = require("./middleware/error");
 const connectDB = require("./config/db");
 const mongoSanitize = require("express-mongo-sanitize");
 const bodyParser = require("body-parser");
+const job = require("./cron");
 
 require("dotenv").config();
 
