@@ -13,6 +13,9 @@ import GlobalErrorDisplay from "./components/GlobalErrorDisplay";
 import Loader from "./components/Loader";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { ErrorProvider } from "./contexts/ErrorContext";
+import Dashboard from "./pages/admin/Dashboard";
+import Layout from "./pages/admin/Layout";
+import Students from "./pages/admin/Students";
 import Categories from "./pages/Categories";
 import Login from "./pages/Login";
 import Readings from "./pages/Readings";
@@ -136,6 +139,18 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        {/* admin */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Dashboard />} />
+          <Route path="students" element={<Students />} />
+        </Route>
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="*" element={<Navigate to="/unauthorized" />} />
       </Routes>

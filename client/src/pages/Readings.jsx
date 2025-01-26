@@ -9,6 +9,7 @@ import { categoris } from "../utils/generateCategories";
 import { lessons } from "../utils/lessons";
 
 const Readings = () => {
+  const [loading, setLoading] = useState(true);
   const [updatedReadings, setUpdatedReadings] = useState([]);
   const { id, categoryId } = useParams();
   const lesson = lessons.find((l) => l.id == id);
@@ -45,7 +46,7 @@ const Readings = () => {
       setUpdatedReadings(readingsWithCompletionStatus);
     };
 
-    fetchReadings();
+    fetchReadings().finally(() => setLoading(false));
   }, [readings]);
 
   return (
@@ -57,11 +58,15 @@ const Readings = () => {
           {categoris[categoryId - 1]["title"]}
         </Typography>
       </Typography>
-      {updatedReadings.length === 0 && (
+      {loading ? (
         <Typography variant="body1" align="center" paragraph>
           Loading readings...
         </Typography>
-      )}
+      ) : !readings.length ? (
+        <Typography variant="body1" align="center" paragraph>
+          No readings found for this category.
+        </Typography>
+      ) : null}
       <Grid container spacing={3}>
         {updatedReadings.map((reading) => (
           <Grid item xs={12} sm={6} md={4} key={reading.id}>

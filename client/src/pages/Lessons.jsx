@@ -26,6 +26,7 @@ const Lessons = () => {
               text={passage.subtitle}
               title={passage.title}
               href={`/lesson/${passage.id}`}
+              image={passage?.image}
             />
           </Grid>
         ))}
