@@ -13,7 +13,6 @@ const sendWithCookie = (res, token, user) => {
       secure: isProduction,
       sameSite: isProduction ? "Strict" : "Lax",
       path: "/",
-      domain: isProduction ? "espreading.uz" : "localhost",
     })
     .json(user);
 };
