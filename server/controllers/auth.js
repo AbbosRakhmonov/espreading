@@ -7,9 +7,8 @@ const sendWithCookie = (res, token, user) => {
   res
     .status(200)
     .cookie("espreading", token, {
-      httpOnly: true,
+      httpOnly: isProduction,
       maxAge: 1 * 24 * 60 * 60 * 1000,
-      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
       secure: isProduction,
       sameSite: isProduction ? "Strict" : "Lax",
       path: "/",
@@ -74,16 +73,9 @@ exports.login = asyncHandler(async (req, res, next) => {
 });
 
 exports.logout = asyncHandler(async (req, res, next) => {
-  res
-    .clearCookie("espreading", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "Strict" : "Lax",
-    })
-    .status(200)
-    .json({
-      success: true,
-    });
+  res.clearCookie("espreading").status(200).json({
+    success: true,
+  });
 });
 
 exports.getMe = asyncHandler(async (req, res, next) => {
