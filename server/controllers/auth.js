@@ -10,7 +10,7 @@ const sendWithCookie = (res, token, user) => {
       httpOnly: isProduction,
       maxAge: 1 * 24 * 60 * 60 * 1000,
       secure: isProduction,
-      sameSite: isProduction ? "Strict" : "Lax",
+      sameSite: "none",
       path: "/",
     })
     .json(user);
