@@ -73,9 +73,18 @@ exports.login = asyncHandler(async (req, res, next) => {
 });
 
 exports.logout = asyncHandler(async (req, res, next) => {
-  res.clearCookie("espreading").status(200).json({
-    success: true,
-  });
+  res
+    .clearCookie("espreading", {
+      httpOnly: true,
+      maxAge: 1 * 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+    })
+    .status(200)
+    .json({
+      success: true,
+    });
 });
 
 exports.getMe = asyncHandler(async (req, res, next) => {
