@@ -33,7 +33,10 @@ app.use(helmet());
 // Enable CORS
 app.use(
   cors({
-    origin: true,
+    origin:
+      process.env.NODE_ENV === "production"
+        ? process.env.CLIENT_URL
+        : "http://localhost:5173",
     credentials: true,
   })
 );

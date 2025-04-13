@@ -9,16 +9,16 @@ const asyncHandler = require("../middleware/async");
  * @param {string} token - The JWT token to be set as a cookie.
  * @param {Object} user - The user object to be sent in the response.
  */
-
 const sendWithCookie = (res, token, user) => {
+  const isProduction = process.env.NODE_ENV === "production";
   res
     .status(200)
     .cookie("espreading", token, {
       httpOnly: true,
       maxAge: 1 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
-      secure: true,
-      sameSite: "Strict",
+      secure: isProduction, // Only secure in production (HTTPS)
+      sameSite: isProduction ? "Strict" : "Lax", // Lax in dev for localhost
     })
     .json(user);
 };
@@ -53,14 +53,12 @@ exports.register = asyncHandler(async (req, res, next) => {
   delete userWithoutPassword.password;
   let token = user.getSignedJwtToken();
 
-  // send token in cookie and user as json
   return sendWithCookie(res, token, userWithoutPassword);
 });
 
 exports.login = asyncHandler(async (req, res, next) => {
   let { email, password } = req.body;
 
-  // Validate login & password
   if (!email || !password) {
     return next(new ErrorResponse("Please provide an email and password", 400));
   }
@@ -82,7 +80,6 @@ exports.login = asyncHandler(async (req, res, next) => {
 });
 
 exports.logout = asyncHandler(async (req, res, next) => {
-  // clear cookie and expire token
   res.clearCookie("espreading").status(200).json({
     success: true,
   });
