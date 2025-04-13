@@ -33,13 +33,10 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setLoading(true);
-      const response = await api.post(
-        "/api/v1/auth/login",
-        { email, password },
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await api.post("/api/v1/auth/login", {
+        email,
+        password,
+      });
       setUser(response.data);
       setLoading(false);
       return response.data;
@@ -52,7 +49,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await api.post("/api/v1/auth/logout", {}, { withCredentials: true });
+      await api.post("/api/v1/auth/logout");
       setUser(null);
     } catch (err) {
       console.error(
@@ -67,9 +64,7 @@ export const AuthProvider = ({ children }) => {
   const getMe = async () => {
     try {
       setLoading(true);
-      const response = await api.get("/api/v1/auth/me", {
-        withCredentials: true,
-      });
+      const response = await api.get("/api/v1/auth/me");
       setUser(response.data);
       setLoading(false);
       return response.data;
