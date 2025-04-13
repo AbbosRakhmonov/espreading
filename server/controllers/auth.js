@@ -11,14 +11,14 @@ const asyncHandler = require("../middleware/async");
  */
 
 const sendWithCookie = (res, token, user) => {
-  return res
+  res
     .status(200)
     .cookie("espreading", token, {
       httpOnly: true,
       maxAge: 1 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
-      path: "/",
-      secure: false,
+      secure: true,
+      sameSite: "Strict",
     })
     .json(user);
 };
