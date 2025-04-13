@@ -7,11 +7,13 @@ const sendWithCookie = (res, token, user) => {
   res
     .status(200)
     .cookie("espreading", token, {
-      httpOnly: false,
+      httpOnly: true,
       maxAge: 1 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
       secure: isProduction,
       sameSite: isProduction ? "Strict" : "Lax",
+      path: "/",
+      domain: isProduction ? "espreading.uz" : "localhost",
     })
     .json(user);
 };
