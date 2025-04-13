@@ -7,7 +7,7 @@ const sendWithCookie = (res, token, user) => {
   res
     .status(200)
     .cookie("espreading", token, {
-      httpOnly: true,
+      httpOnly: false,
       maxAge: 1 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
       secure: isProduction,
