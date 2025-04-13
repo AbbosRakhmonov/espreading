@@ -47,6 +47,8 @@ const corsOptions = {
   credentials: true,
 };
 
+app.use(cors(corsOptions));
+
 // Cookie parser
 app.use(cookieParser());
 app.use(morgan("dev"));
