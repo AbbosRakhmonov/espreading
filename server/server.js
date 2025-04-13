@@ -30,6 +30,10 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://espreading.vercel.app",
   "https://espreading.uz",
+  "https://espreading.onrender.com",
+  "https://www.espreading.onrender.com",
+  "https://www.espreading.uz",
+  "https://www.espreading.vercel.app",
 ];
 
 const corsOptions = {
@@ -41,8 +45,6 @@ const corsOptions = {
     }
   },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 // Cookie parser
