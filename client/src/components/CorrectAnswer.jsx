@@ -1,10 +1,10 @@
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { Box } from "@mui/material";
-import React from "react";
 
 const CorrectAnswer = () => {
   return (
     <Box
+      component={"span"}
       sx={{
         display: "flex",
         alignItems: "center",

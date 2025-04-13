@@ -140,12 +140,13 @@ export default function Sequencing({
 
   useEffect(() => {
     if (completed) {
-      const sortedDialogues = [...dialogues].sort(
-        (a, b) =>
-          Object.values(answers).indexOf(a.id) -
-          Object.values(answers).indexOf(b.id)
+      setDialogues((prev) =>
+        [...prev].sort(
+          (a, b) =>
+            Object.values(answers).indexOf(a.id) -
+            Object.values(answers).indexOf(b.id)
+        )
       );
-      setDialogues(sortedDialogues);
     }
   }, [completed, answers]);
 

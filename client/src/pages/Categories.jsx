@@ -1,9 +1,10 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, Link, Typography } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router-dom";
 import FolderCard from "../components/FolderCard";
 import Header from "../components/Header";
 import { lessons } from "../utils/lessons";
+import { Link as RouterLink } from "react-router-dom";
 
 const Categories = () => {
   const { id } = useParams();
@@ -12,7 +13,10 @@ const Categories = () => {
     <Container maxWidth="lg" sx={{ py: 3 }}>
       <Header />
       <Typography variant="h6" component="h1" mb={2}>
-        Lesson {id}
+        <Link component={RouterLink} to={`/`}>
+          Available Lessons
+        </Link>{" "}
+        / Lesson {id}
       </Typography>
       <Box
         sx={{

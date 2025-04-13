@@ -19,7 +19,6 @@ const sendWithCookie = (res, token, user) => {
       expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
       path: "/",
       secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     })
     .json(user);
 };
@@ -84,7 +83,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 
 exports.logout = asyncHandler(async (req, res, next) => {
   // clear cookie and expire token
-  return res.clearCookie("espreading").status(200).json({
+  res.clearCookie("espreading").status(200).json({
     success: true,
   });
 });

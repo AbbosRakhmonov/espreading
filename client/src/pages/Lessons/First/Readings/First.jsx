@@ -2,12 +2,8 @@ import {
   Box,
   Button,
   Container,
-  FormControl,
   Grid,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
   Table,
   TableBody,
   TableCell,
@@ -18,13 +14,16 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import CorrectAnswer from "../../../../components/CorrectAnswer";
 import CustomAudio from "../../../../components/CustomAudio";
 import { useError } from "../../../../contexts/ErrorContext";
 import { completeReading } from "../../../../utils/api";
-import { formatTime } from "../../../../utils/formatTime";
+import CustomSelect from "../../../../components/CustomSelect";
+import BackButton from "../../../../components/BackButton";
+import { useTime } from "../../../../hooks/useTime";
+import ReadingTitle from "../../../../components/ReadingTitle";
 
 const answer = {
   emma: 1,
@@ -34,52 +33,22 @@ const answer = {
   sofia: 5,
 };
 
-const CustomSelect = ({
-  name = "",
-  disabled = false,
-  value = "",
-  error = false,
-}) => {
-  return (
-    <FormControl fullWidth size="small" disabled={disabled} error={error}>
-      <InputLabel id="demo-simple-select-label">
-        {error ? "Incorrect Answer" : "Please select a situation"}
-      </InputLabel>
-      <Select
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-        defaultValue={value}
-        label={error ? "Incorrect Answer" : "Please select a situation"}
-        name={name}
-        disabled={disabled}
-        inputProps={{ "aria-label": "Without label" }}
-      >
-        <MenuItem value={4}>Depression</MenuItem>
-        <MenuItem value={2}>Anger</MenuItem>
-        <MenuItem value={3}>Bargaining</MenuItem>
-        <MenuItem value={1}>Denial</MenuItem>
-        <MenuItem value={5}>Acceptance</MenuItem>
-      </Select>
-    </FormControl>
-  );
-};
+const selectOptions = [
+  { value: 4, label: "Depression" },
+  { value: 2, label: "Anger" },
+  { value: 3, label: "Bargaining" },
+  { value: 1, label: "Denial" },
+  { value: 5, label: "Acceptance" },
+];
 
 function First({ completed = false, score = 0, answers = {}, time = 0 }) {
   const [loading, setLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(time); // 60 minutes
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { readingId } = useParams();
   const { showError } = useError();
 
-  useEffect(() => {
-    if (completed) return;
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => prevTime + 1);
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [completed]);
+  const { timeLeft } = useTime({ time, completed });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -98,29 +67,8 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: isMobile ? "column" : "row",
-          justifyContent: "space-between",
-          alignItems: isMobile ? "flex-start" : "center",
-          mb: 2,
-        }}
-      >
-        <Typography
-          variant={isMobile ? "h5" : "h4"}
-          component="h1"
-          color="primary"
-        >
-          The Five Stages of Grief
-        </Typography>
-        <Typography
-          variant={isMobile ? "h6" : "h5"}
-          sx={{ mt: isMobile ? 2 : 0 }}
-        >
-          Time: {formatTime(timeLeft)}
-        </Typography>
-      </Box>
+      <BackButton />
+      <ReadingTitle timeLeft={timeLeft} />
       <Typography
         variant="body1"
         sx={{
@@ -423,7 +371,6 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
               </Typography>
               <CustomAudio audioUrl="/audios/fatima.wav" type="audio/wav" />
             </Box>
-
             <form onSubmit={handleSubmit}>
               <TableContainer component={Paper}>
                 <Table aria-label="customized table">
@@ -461,6 +408,8 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
                           key={"carlos"}
                           value={completed ? answers.carlos : ""}
                           error={completed && answers.carlos != answer.carlos}
+                          options={selectOptions}
+                          label="Please select a situation"
                         />
                         {completed && answers.carlos == answer.carlos && (
                           <CorrectAnswer />
@@ -478,6 +427,8 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
                           key={"liam"}
                           value={completed ? answers.liam : ""}
                           error={completed && answers.liam != answer.liam}
+                          options={selectOptions}
+                          label="Please select a situation"
                         />
                         {completed && answers.liam == answer.liam && (
                           <CorrectAnswer />
@@ -495,6 +446,8 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
                           key={"fatima"}
                           value={completed ? answers.fatima : ""}
                           error={completed && answers.fatima != answer.fatima}
+                          options={selectOptions}
+                          label="Please select a situation"
                         />
                         {completed && answers.fatima == answer.fatima && (
                           <CorrectAnswer />
@@ -512,6 +465,8 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
                           key={"sofia"}
                           value={completed ? answers.sofia : ""}
                           error={completed && answers.sofia != answer.sofia}
+                          options={selectOptions}
+                          label="Please select a situation"
                         />
                         {completed && answers.sofia == answer.sofia && (
                           <CorrectAnswer />
@@ -529,6 +484,8 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
                           key={"emma"}
                           value={completed ? answers.emma : ""}
                           error={completed && answers.emma != answer.emma}
+                          options={selectOptions}
+                          label="Please select a situation"
                         />
                         {completed && answers.emma == answer.emma && (
                           <CorrectAnswer />
@@ -538,33 +495,6 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
                   </TableBody>
                 </Table>
               </TableContainer>
-              <Box
-                sx={{
-                  textAlign: "center",
-                  mt: 4,
-                }}
-              >
-                {completed && (
-                  <Typography
-                    variant="h6"
-                    component="h2"
-                    align="center"
-                    sx={{ mb: 2 }}
-                    color="success.main"
-                    gutterBottom
-                  >
-                    Score: {score} / 5
-                  </Typography>
-                )}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={loading || completed}
-                >
-                  Submit Answers
-                </Button>
-              </Box>
             </form>
           </Paper>
         </Grid>

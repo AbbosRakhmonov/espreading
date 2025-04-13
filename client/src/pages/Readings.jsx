@@ -1,5 +1,5 @@
-import { Container, Grid, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Container, Grid, Link, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import LinkCard from "../components/LinkCard";
@@ -7,6 +7,7 @@ import { useError } from "../contexts/ErrorContext";
 import { checkReadingCompleted } from "../utils/api";
 import { categoris } from "../utils/generateCategories";
 import { lessons } from "../utils/lessons";
+import { Link as RouterLink } from "react-router-dom";
 
 const Readings = () => {
   const [loading, setLoading] = useState(true);
@@ -34,7 +35,7 @@ const Readings = () => {
           try {
             const response = await checkReadingCompleted(reading.id);
             return { ...reading, ...response.data };
-          } catch (error) {
+          } catch {
             showError(
               `Failed to check completion status for reading: ${reading.title}`
             );
@@ -47,14 +48,21 @@ const Readings = () => {
     };
 
     fetchReadings().finally(() => setLoading(false));
-  }, [readings]);
+  }, [readings, showError]);
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
       <Header />
       <Typography variant="h6" component="h1" mb={2}>
-        Lesson {id} /{" "}
-        <Typography component="span" color="primary">
+        <Link component={RouterLink} to={`/`}>
+          Available Lessons
+        </Link>{" "}
+        /{" "}
+        <Link component={RouterLink} to={`/lesson/${id}`}>
+          Lesson {id}
+        </Link>{" "}
+        /{" "}
+        <Typography component="span">
           {categoris[categoryId - 1]["title"]}
         </Typography>
       </Typography>

@@ -1,5 +1,4 @@
 import { Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
-import React from "react";
 import LinkCard from "../components/LinkCard";
 
 import { lessons } from "../utils/lessons";
