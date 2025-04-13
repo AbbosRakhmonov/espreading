@@ -9,15 +9,10 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const { showError } = useError();
 
-  useEffect(() => {
-    // Check if user is logged in on initial load
-    getMe();
-  }, []);
-
   const register = async (fullName, email, password, university) => {
     try {
       setLoading(true);
-      const response = await api.post("/auth/register", {
+      const response = await api.post("/api/v1/auth/register", {
         fullName,
         email,
         password,
@@ -38,7 +33,13 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setLoading(true);
-      const response = await api.post("/auth/login", { email, password });
+      const response = await api.post(
+        "/api/v1/auth/login",
+        { email, password },
+        {
+          withCredentials: true,
+        }
+      );
       setUser(response.data);
       setLoading(false);
       return response.data;
@@ -51,27 +52,40 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await api.post("/auth/logout");
+      await api.post("/api/v1/auth/logout", {}, { withCredentials: true });
       setUser(null);
     } catch (err) {
-      showError("Logout failed");
-      console.error("Logout failed", err);
+      console.error(
+        "Logout failed:",
+        err.response?.data?.message || err.message
+      );
+      showError(err.response?.data?.message || "Logout failed");
+      throw err;
     }
   };
 
   const getMe = async () => {
     try {
       setLoading(true);
-      const response = await api.get("/auth/me");
+      const response = await api.get("/api/v1/auth/me", {
+        withCredentials: true,
+      });
       setUser(response.data);
       setLoading(false);
       return response.data;
     } catch (err) {
+      console.error(
+        "getMe failed:",
+        err.response?.data?.message || err.message
+      );
       setUser(null);
       setLoading(false);
-      // showError(err.response?.data?.message || "Failed to get user data");
     }
   };
+
+  useEffect(() => {
+    getMe();
+  }, []);
 
   return (
     <AuthContext.Provider

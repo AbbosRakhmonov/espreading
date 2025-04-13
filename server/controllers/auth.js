@@ -2,13 +2,6 @@ const User = require("../models/User");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 
-/**
- * Sends a response with a specified user object and sets a cookie with the token.
- *
- * @param {Object} res - The response object.
- * @param {string} token - The JWT token to be set as a cookie.
- * @param {Object} user - The user object to be sent in the response.
- */
 const sendWithCookie = (res, token, user) => {
   const isProduction = process.env.NODE_ENV === "production";
   res
@@ -17,8 +10,8 @@ const sendWithCookie = (res, token, user) => {
       httpOnly: true,
       maxAge: 1 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
-      secure: isProduction, // Only secure in production (HTTPS)
-      sameSite: isProduction ? "Strict" : "Lax", // Lax in dev for localhost
+      secure: isProduction,
+      sameSite: isProduction ? "Strict" : "Lax",
     })
     .json(user);
 };
@@ -80,9 +73,16 @@ exports.login = asyncHandler(async (req, res, next) => {
 });
 
 exports.logout = asyncHandler(async (req, res, next) => {
-  res.clearCookie("espreading").status(200).json({
-    success: true,
-  });
+  res
+    .clearCookie("espreading", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "Strict" : "Lax",
+    })
+    .status(200)
+    .json({
+      success: true,
+    });
 });
 
 exports.getMe = asyncHandler(async (req, res, next) => {

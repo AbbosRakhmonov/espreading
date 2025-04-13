@@ -22,11 +22,6 @@ app.use(
   })
 );
 
-// Cookie parser
-app.use(cookieParser());
-app.use(morgan("dev"));
-app.use(mongoSanitize());
-
 // Set security headers
 app.use(helmet());
 
@@ -40,6 +35,11 @@ app.use(
     credentials: true,
   })
 );
+
+// Cookie parser
+app.use(cookieParser());
+app.use(morgan("dev"));
+app.use(mongoSanitize());
 
 app.get("/", (req, res) => {
   res.send("API is running...");

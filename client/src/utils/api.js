@@ -21,11 +21,11 @@ api.interceptors.response.use(
 );
 
 const checkReadingCompleted = async (readingId) => {
-  return await api.get(`/readings/${readingId}/completed`);
+  return await api.get(`/api/v1/readings/${readingId}/completed`);
 };
 
 const completeReading = async (readingId, data) => {
-  return await api.post(`/readings/${readingId}/completed`, data);
+  return await api.post(`/api/v1/readings/${readingId}/completed`, data);
 };
 
 export default api;
