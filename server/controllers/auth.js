@@ -18,7 +18,7 @@ const sendWithCookie = (res, token, user) => {
       maxAge: 1 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
       path: "/",
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
     })
     .json(user);
 };
