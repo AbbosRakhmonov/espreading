@@ -40,7 +40,7 @@ function Register() {
   return (
     <Box
       sx={{
-        background: 'url("/images/education-background.jpg")',
+        background: 'url("/images/bg.jpg")',
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",

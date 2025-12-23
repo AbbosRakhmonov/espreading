@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Container,
   Grid,
   Paper,
@@ -24,6 +23,8 @@ import CustomSelect from "../../../../components/CustomSelect";
 import BackButton from "../../../../components/BackButton";
 import { useTime } from "../../../../hooks/useTime";
 import ReadingTitle from "../../../../components/ReadingTitle";
+import WordPopper from "../../../../components/WordPopper";
+import CompleteButton from "../../../../components/CompleteButton";
 
 const answer = {
   emma: 1,
@@ -142,11 +143,11 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
                 lineHeight: 1.8,
               }}
             >
-              Grief is a natural response to loss. It affects everyone
-              differently, but psychologists have identified five common stages
-              that many people experience. Understanding these stages can help
-              us cope with difficult emotions and support others going through
-              tough times.
+              <WordPopper word="Grief" /> is a natural response to loss. It
+              affects everyone differently, but psychologists have identified
+              five common stages that many people experience. Understanding
+              these stages can help us cope with difficult emotions and support
+              others going through tough times.
             </Typography>
             <Typography
               variant="h6"
@@ -156,7 +157,7 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
                 lineHeight: 1.8,
               }}
             >
-              1. Denial
+              1. <WordPopper word="Denial" />
             </Typography>
             <Typography
               variant="body1"
@@ -180,7 +181,7 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
                 lineHeight: 1.8,
               }}
             >
-              2. Anger
+              2. <WordPopper word="Anger" />
             </Typography>
             <Typography
               variant="body1"
@@ -205,7 +206,7 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
                 lineHeight: 1.8,
               }}
             >
-              3. Bargaining
+              3. <WordPopper word="Bargaining" />
             </Typography>
             <Typography
               variant="body1"
@@ -230,7 +231,7 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
                 lineHeight: 1.8,
               }}
             >
-              4. Depression
+              4. <WordPopper word="Depression" />
             </Typography>
             <Typography
               variant="body1"
@@ -255,7 +256,7 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
                 lineHeight: 1.8,
               }}
             >
-              5. Acceptance
+              5. <WordPopper word="Acceptance" />
             </Typography>
             <Typography
               variant="body1"
@@ -495,6 +496,12 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
                   </TableBody>
                 </Table>
               </TableContainer>
+              <CompleteButton
+                loading={loading}
+                completed={completed}
+                score={score}
+                total={5}
+              />
             </form>
           </Paper>
         </Grid>
