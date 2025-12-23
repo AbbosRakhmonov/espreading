@@ -7,10 +7,10 @@ const sendWithCookie = (res, token, user) => {
   res
     .status(200)
     .cookie("espreading", token, {
-      httpOnly: isProduction,
-      maxAge: 1 * 24 * 60 * 60 * 1000,
-      secure: isProduction,
-      sameSite: "none",
+      httpOnly: true, // Always httpOnly for security
+      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
+      secure: isProduction, // true in production (HTTPS), false in development (HTTP)
+      sameSite: isProduction ? "none" : "lax", // "none" requires secure: true, so use "lax" in development
       path: "/",
     })
     .json(user);
@@ -73,12 +73,16 @@ exports.login = asyncHandler(async (req, res, next) => {
 });
 
 exports.logout = asyncHandler(async (req, res, next) => {
+  const isProduction = process.env.NODE_ENV === "production";
+  // Clear cookie by setting it to empty with immediate expiration
+  // Options must match exactly how the cookie was set
   res
-    .clearCookie("espreading", {
+    .cookie("espreading", "", {
       httpOnly: true,
-      maxAge: 1 * 24 * 60 * 60 * 1000,
-      secure: true,
-      sameSite: "none",
+      maxAge: 0, // Set to 0 to expire immediately
+      expires: new Date(0), // Set to past date to expire immediately
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       path: "/",
     })
     .status(200)
