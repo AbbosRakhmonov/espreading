@@ -10,6 +10,29 @@ const ReadingSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  lesson: {
+    type: Number,
+    required: false,
+  },
+  lessonTitle: {
+    type: String,
+    required: false,
+    trim: true,
+  },
+  category: {
+    type: Number,
+    required: false,
+  },
+  categoryTitle: {
+    type: String,
+    required: false,
+    trim: true,
+  },
+  readingTitle: {
+    type: String,
+    required: false,
+    trim: true,
+  },
   time: {
     type: Number,
     default: 0,
@@ -29,6 +52,7 @@ const ReadingSchema = new mongoose.Schema({
   },
 });
 
+// Unique constraint on user and reading to prevent duplicate submissions
 ReadingSchema.index({ user: 1, reading: 1 }, { unique: true });
 
 module.exports = mongoose.model("Reading", ReadingSchema);

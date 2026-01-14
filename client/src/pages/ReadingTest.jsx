@@ -40,6 +40,12 @@ const ReadingTest = () => {
           const { data } = await checkReadingCompleted(reading.id);
           if (data.completed) {
             setData(data);
+          } else {
+            setData({
+              completed: false,
+              score: 0,
+              answers: {},
+            });
           }
         } catch (error) {
           showError(

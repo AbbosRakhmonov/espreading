@@ -79,6 +79,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    // Don't fetch user data on landing page
+    if (window.location.pathname === "/") {
+      setLoading(false);
+      return;
+    }
     getMe();
   }, []);
 

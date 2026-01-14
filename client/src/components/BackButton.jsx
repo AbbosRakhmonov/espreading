@@ -1,6 +1,16 @@
 import { Box, Button } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
-const BackButton = () => {
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+const BackButton = ({ to }) => {
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    if (to) {
+      navigate(to);
+    } else {
+      navigate(-1);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -8,7 +18,7 @@ const BackButton = () => {
         marginY: "1rem",
       }}
     >
-      <Button component={RouterLink} to={-1} variant="contained">
+      <Button onClick={handleClick} variant="contained">
         go Back
       </Button>
     </Box>

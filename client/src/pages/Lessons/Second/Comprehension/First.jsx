@@ -55,7 +55,7 @@ const questions = [
 const First = ({ completed = false, score = 0, answers = {}, time = 0 }) => {
   const { timeLeft } = useTime({ completed, time });
   const [loading, setLoading] = useState(false);
-  const { readingId } = useParams();
+  const { readingId, id, categoryId } = useParams();
   const { showError } = useError();
 
   const handleSubmit = useCallback(
@@ -79,7 +79,7 @@ const First = ({ completed = false, score = 0, answers = {}, time = 0 }) => {
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-      <BackButton />
+      <BackButton to={`/lesson/${id}/category/${categoryId}`} />
       <ReadingTitle
         title="5 types of difficult coworkers "
         timeLeft={timeLeft}

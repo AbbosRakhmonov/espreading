@@ -1,6 +1,19 @@
 const asyncHandler = require("../middleware/async");
 const ErrorResponse = require("../utils/errorResponse");
 const Reading = require("../models/Reading");
+const User = require("../models/User");
+const { getReadingMeta } = require("../utils/readingCatalog");
+
+// Mapping of reading ID to lesson and category
+const readingToLessonCategory = {
+  1: { lesson: 1, category: 1 },
+  2: { lesson: 1, category: 3 },
+  3: { lesson: 2, category: 1 },
+  4: { lesson: 3, category: 1 },
+  5: { lesson: 4, category: 1 },
+  6: { lesson: 5, category: 1 },
+  7: { lesson: 6, category: 1 },
+};
 
 const thirdReadingAnswers = {
   "q1-1": false,
@@ -95,9 +108,16 @@ const checkFirstReading = async (body, user) => {
       return acc + (body[key] === correctAnswers[key] ? 1 : 0);
     }, 0);
 
+    const { lesson, category } = readingToLessonCategory[1] || {};
+    const meta = getReadingMeta(1);
     const reading = await Reading.create({
       user: user._id,
       reading: "1",
+      lesson,
+      category,
+      lessonTitle: meta?.lessonTitle,
+      categoryTitle: meta?.categoryTitle,
+      readingTitle: meta?.readingTitle,
       time: Number(time),
       answers: body,
       score,
@@ -136,9 +156,16 @@ const checkSecondReading = async (body, user) => {
       return acc + (answers[key] === correctAnswers[key] ? 1 : 0);
     }, 0);
 
+    const { lesson, category } = readingToLessonCategory[2] || {};
+    const meta = getReadingMeta(2);
     const reading = await Reading.create({
       user: user._id,
       reading: "2",
+      lesson,
+      category,
+      lessonTitle: meta?.lessonTitle,
+      categoryTitle: meta?.categoryTitle,
+      readingTitle: meta?.readingTitle,
       time,
       answers,
       score,
@@ -177,9 +204,16 @@ const checkThirdReading = async (body, user) => {
       return acc + (answers[key] === thirdReadingAnswers[key] ? 1 : 0);
     }, 0);
 
+    const { lesson, category } = readingToLessonCategory[3] || {};
+    const meta = getReadingMeta(3);
     const reading = await Reading.create({
       user: user._id,
       reading: "3",
+      lesson,
+      category,
+      lessonTitle: meta?.lessonTitle,
+      categoryTitle: meta?.categoryTitle,
+      readingTitle: meta?.readingTitle,
       time,
       answers,
       score,
@@ -212,9 +246,16 @@ const checkFourthReading = async (body, user) => {
       return acc + (answers[key] === fourthReadingAnswers[key] ? 1 : 0);
     }, 0);
 
+    const { lesson, category } = readingToLessonCategory[4] || {};
+    const meta = getReadingMeta(4);
     const reading = await Reading.create({
       user: user._id,
       reading: "4",
+      lesson,
+      category,
+      lessonTitle: meta?.lessonTitle,
+      categoryTitle: meta?.categoryTitle,
+      readingTitle: meta?.readingTitle,
       time,
       answers,
       score,
@@ -247,9 +288,16 @@ const checkFifthReading = async (body, user) => {
       return acc + (answers[key] === fifthReadingAnswers[key] ? 1 : 0);
     }, 0);
 
+    const { lesson, category } = readingToLessonCategory[5] || {};
+    const meta = getReadingMeta(5);
     const reading = await Reading.create({
       user: user._id,
       reading: "5",
+      lesson,
+      category,
+      lessonTitle: meta?.lessonTitle,
+      categoryTitle: meta?.categoryTitle,
+      readingTitle: meta?.readingTitle,
       time,
       answers,
       score,
@@ -282,9 +330,16 @@ const checkSixthReading = async (body, user) => {
       return acc + (answers[key] === sixthReadingAnswers[key] ? 1 : 0);
     }, 0);
 
+    const { lesson, category } = readingToLessonCategory[6] || {};
+    const meta = getReadingMeta(6);
     const reading = await Reading.create({
       user: user._id,
       reading: "6",
+      lesson,
+      category,
+      lessonTitle: meta?.lessonTitle,
+      categoryTitle: meta?.categoryTitle,
+      readingTitle: meta?.readingTitle,
       time,
       answers,
       score,
@@ -326,9 +381,16 @@ const checkSeventhReading = async (body, user) => {
       return acc + (answers[key] === seventhReadingAnswers[key] ? 1 : 0);
     }, 0);
 
+    const { lesson, category } = readingToLessonCategory[7] || {};
+    const meta = getReadingMeta(7);
     const reading = await Reading.create({
       user: user._id,
       reading: "7",
+      lesson,
+      category,
+      lessonTitle: meta?.lessonTitle,
+      categoryTitle: meta?.categoryTitle,
+      readingTitle: meta?.readingTitle,
       time,
       answers,
       score,
@@ -348,12 +410,15 @@ exports.submitReadingAnswers = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("Reading id is required", 400));
   }
 
-  const reading = await Reading.findOne({ user: user._id, reading: id });
+  // Check if reading already exists for this user
+  const existingReading = await Reading.findOne({
+    user: user._id,
+    reading: id,
+  }).lean();
 
-  if (reading) {
-    return next(
-      new ErrorResponse("You have already completed this reading", 400)
-    );
+  if (existingReading) {
+    // Return existing reading (prevents duplicate submissions)
+    return res.status(200).json(existingReading);
   }
 
   const checkReading = {
@@ -370,8 +435,24 @@ exports.submitReadingAnswers = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("Invalid reading id", 400));
   }
 
-  const newReading = await checkReading(req.body, user);
-  res.status(200).json(newReading);
+  try {
+    const newReading = await checkReading(req.body, user);
+    res.status(200).json(newReading);
+  } catch (error) {
+    // Handle duplicate key error (race condition - another request created it)
+    if (error.code === 11000 || error.message?.includes("duplicate key") || error.message?.includes("E11000") || error.name === "MongoServerError") {
+      // Fetch and return the existing reading
+      const existingReading = await Reading.findOne({
+        user: user._id,
+        reading: id,
+      }).lean();
+      
+      if (existingReading) {
+        return res.status(200).json(existingReading);
+      }
+    }
+    throw error;
+  }
 });
 
 exports.checkReadingCompleted = asyncHandler(async (req, res, next) => {
@@ -381,10 +462,11 @@ exports.checkReadingCompleted = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("Reading id is required", 400));
   }
 
+  // Get the reading for this user
   const reading = await Reading.findOne({
     user: user._id,
     reading: req.params.id,
-  });
+  }).lean();
 
   if (!reading) {
     return res.status(200).json({

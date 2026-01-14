@@ -16,7 +16,11 @@ import { ErrorProvider } from "./contexts/ErrorContext";
 import Dashboard from "./pages/admin/Dashboard";
 import Layout from "./pages/admin/Layout";
 import Students from "./pages/admin/Students";
+import Universities from "./pages/admin/Universities";
+import Analytics from "./pages/admin/Analytics";
+import ActivityLogs from "./pages/admin/ActivityLogs";
 import Categories from "./pages/Categories";
+import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Readings from "./pages/Readings";
 import ReadingTest from "./pages/ReadingTest";
@@ -25,8 +29,8 @@ import StudentDashboard from "./pages/StudentDashboard";
 import Unauthorized from "./pages/Unauthorized";
 import theme from "./theme";
 
-const BgVideoLayout = ({ children, user }) => {
-  if (user)
+const BgVideoLayout = ({ children, user, showVideo = true }) => {
+  if (user && showVideo)
     return (
       <>
         <video
@@ -94,25 +98,33 @@ function AppRoutes() {
   }
 
   return (
-    <BgVideoLayout user={user}>
+    <>
       <Routes>
+        <Route path="/" element={<Landing />} />
         <Route
-          path="/"
+          path="/login"
           element={
-            user ? (
-              <Navigate to={user.role === "admin" ? "/admin" : "/student"} />
-            ) : (
+            <BgVideoLayout user={user}>
               <Login />
-            )
+            </BgVideoLayout>
           }
         />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/register"
+          element={
+            <BgVideoLayout user={user}>
+              <Register />
+            </BgVideoLayout>
+          }
+        />
         <Route
           path="/student"
           element={
-            <ProtectedRoute allowedRoles={["student"]}>
-              <StudentDashboard />
-            </ProtectedRoute>
+            <BgVideoLayout user={user}>
+              <ProtectedRoute allowedRoles={["student"]}>
+                <StudentDashboard />
+              </ProtectedRoute>
+            </BgVideoLayout>
           }
         />
         <Route
@@ -150,11 +162,14 @@ function AppRoutes() {
         >
           <Route index element={<Dashboard />} />
           <Route path="students" element={<Students />} />
+          <Route path="universities" element={<Universities />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="activity-logs" element={<ActivityLogs />} />
         </Route>
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="*" element={<Navigate to="/unauthorized" />} />
       </Routes>
-    </BgVideoLayout>
+    </>
   );
 }
 

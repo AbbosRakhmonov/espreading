@@ -13,6 +13,7 @@ require("dotenv").config();
 
 const auth = require("./routes/auth");
 const reading = require("./routes/reading");
+const admin = require("./routes/admin");
 
 const app = express();
 
@@ -61,6 +62,7 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/readings", reading);
+app.use("/api/v1/admin", admin);
 
 // error handler
 app.use(errorHandler);

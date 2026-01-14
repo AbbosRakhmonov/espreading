@@ -3,6 +3,11 @@ import { useEffect, useState } from "react";
 export const useTime = ({ time = 0, completed = false }) => {
   const [timeLeft, setTimeLeft] = useState(time);
 
+  // Reset timer when time prop changes
+  useEffect(() => {
+    setTimeLeft(time);
+  }, [time]);
+
   useEffect(() => {
     if (completed) return;
     const timer = setInterval(() => {

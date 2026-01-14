@@ -13,6 +13,7 @@ import { MultiBackend } from "react-dnd-multi-backend";
 import { useParams } from "react-router-dom";
 import CorrectAnswer from "../../../../components/CorrectAnswer";
 import IncorrectAnswer from "../../../../components/IncorrectAnswer";
+import BackButton from "../../../../components/BackButton";
 import { useError } from "../../../../contexts/ErrorContext";
 import { completeReading } from "../../../../utils/api";
 import { formatTime } from "../../../../utils/formatTime";
@@ -99,6 +100,10 @@ export default function Sequencing({
   const { showError } = useError();
   const [loading, setLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(time);
+
+  useEffect(() => {
+    setTimeLeft(time);
+  }, [time]);
   const [dialogues, setDialogues] = useState([
     {
       id: "1",
@@ -136,7 +141,7 @@ export default function Sequencing({
         '<b>Psychologist:</b> Those "what if" questions show how much you care. But they can also hold you back. You did the best you could with what you knew at the time.',
     },
   ]);
-  const { readingId } = useParams();
+  const { readingId, id, categoryId } = useParams();
 
   useEffect(() => {
     if (completed) {
@@ -190,6 +195,7 @@ export default function Sequencing({
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
+      <BackButton to={`/lesson/${id}/category/${categoryId}`} />
       <Box
         sx={{
           display: "flex",
@@ -240,25 +246,29 @@ export default function Sequencing({
           }}
         >
           {completed && (
-            <Typography
-              variant="h6"
-              component="h2"
-              align="center"
-              sx={{ mb: 2 }}
-              color="success.main"
-              gutterBottom
-            >
-              Score: {score} / 7
-            </Typography>
+            <>
+              <Typography
+                variant="h6"
+                component="h2"
+                align="center"
+                sx={{ mb: 1 }}
+                color="success.main"
+                gutterBottom
+              >
+                Score: {score} / 7
+              </Typography>
+            </>
           )}
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={loading || completed}
-          >
-            {loading ? "Submitting..." : "Submit Answers"}
-          </Button>
+          {!completed && (
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+            >
+              {loading ? "Submitting..." : "Submit Answers"}
+            </Button>
+          )}
         </Box>
       </form>
     </Container>

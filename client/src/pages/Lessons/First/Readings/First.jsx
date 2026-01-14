@@ -46,7 +46,7 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const { readingId } = useParams();
+  const { readingId, id, categoryId } = useParams();
   const { showError } = useError();
 
   const { timeLeft } = useTime({ time, completed });
@@ -68,7 +68,7 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-      <BackButton />
+      <BackButton to={`/lesson/${id}/category/${categoryId}`} />
       <ReadingTitle timeLeft={timeLeft} />
       <Typography
         variant="body1"

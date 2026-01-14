@@ -1,9 +1,12 @@
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import InsightsIcon from "@mui/icons-material/Insights";
 import MenuIcon from "@mui/icons-material/Menu";
 import PeopleIcon from "@mui/icons-material/People";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
+import SchoolIcon from "@mui/icons-material/School";
+import HistoryIcon from "@mui/icons-material/History";
 import { default as MuiAppBar } from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -234,6 +237,21 @@ export default function Layout() {
               title: "Students",
               path: "students",
               icon: <PeopleIcon />,
+            },
+            {
+              title: "Universities",
+              path: "universities",
+              icon: <SchoolIcon />,
+            },
+            {
+              title: "Analytics",
+              path: "analytics",
+              icon: <InsightsIcon />,
+            },
+            {
+              title: "Activity Logs",
+              path: "activity-logs",
+              icon: <HistoryIcon />,
             },
           ].map((text, index) => (
             <ListItem key={text.title} disablePadding sx={{ display: "block" }}>

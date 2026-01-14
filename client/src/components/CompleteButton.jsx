@@ -13,21 +13,23 @@ const CompleteButton = ({ loading, completed, score, total = 5 }) => {
           variant="h6"
           component="h2"
           align="center"
-          sx={{ mb: 2 }}
+          sx={{ mb: 1 }}
           color="success.main"
           gutterBottom
         >
           Score: {score} / {total}
         </Typography>
       )}
-      <Button
-        variant="contained"
-        color="primary"
-        type="submit"
-        disabled={loading || completed}
-      >
-        Submit Answers
-      </Button>
+      {!completed && (
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          disabled={loading}
+        >
+          Submit Answers
+        </Button>
+      )}
     </Box>
   );
 };

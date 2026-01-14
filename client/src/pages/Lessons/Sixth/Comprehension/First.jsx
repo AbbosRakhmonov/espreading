@@ -82,7 +82,7 @@ const ChildhoodStress = ({
 }) => {
   const { timeLeft } = useTime({ completed, time });
   const [loading, setLoading] = useState(false);
-  const { readingId } = useParams();
+  const { readingId, id, categoryId } = useParams();
   const { showError } = useError();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -108,7 +108,7 @@ const ChildhoodStress = ({
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-      <BackButton />
+      <BackButton to={`/lesson/${id}/category/${categoryId}`} />
       <ReadingTitle
         title="Childhood Stress: How Parents Can Help"
         timeLeft={timeLeft}

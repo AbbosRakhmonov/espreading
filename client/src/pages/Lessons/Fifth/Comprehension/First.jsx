@@ -116,7 +116,7 @@ const ChildhoodDepression = ({
 }) => {
   const { timeLeft } = useTime({ completed, time });
   const [loading, setLoading] = useState(false);
-  const { readingId } = useParams();
+  const { readingId, id, categoryId } = useParams();
   const { showError } = useError();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -142,7 +142,7 @@ const ChildhoodDepression = ({
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-      <BackButton />
+      <BackButton to={`/lesson/${id}/category/${categoryId}`} />
       <ReadingTitle title="Depression in Children" timeLeft={timeLeft} />
       <Grid2 container spacing={2}>
         <Grid2
