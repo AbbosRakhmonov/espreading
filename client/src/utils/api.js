@@ -74,6 +74,27 @@ const getActivityLogs = async (params = {}) => {
   return await api.get(`/api/v1/admin/activity-logs?${queryParams.toString()}`);
 };
 
+const getQuestionnaireStatus = async () => {
+  return await api.get("/api/v1/questionnaire/status");
+};
+
+const submitQuestionnaire = async (type, answers) => {
+  return await api.post("/api/v1/questionnaire/submit", { type, answers });
+};
+
+const getAllQuestionnaires = async () => {
+  return await api.get("/api/v1/questionnaire/all");
+};
+
+const getQuestionnaireStatistics = async (type) => {
+  const params = type ? `?type=${type}` : "";
+  return await api.get(`/api/v1/questionnaire/statistics${params}`);
+};
+
+const getStudentQuestionnaire = async (studentId) => {
+  return await api.get(`/api/v1/questionnaire/student/${studentId}`);
+};
+
 export default api;
 
 export {
@@ -88,4 +109,9 @@ export {
   exportStudents,
   exportStatistics,
   getActivityLogs,
+  getQuestionnaireStatus,
+  submitQuestionnaire,
+  getAllQuestionnaires,
+  getQuestionnaireStatistics,
+  getStudentQuestionnaire,
 };

@@ -43,12 +43,15 @@ import {
   deleteStudent,
   exportStudents,
   exportStatistics,
+  getStudentQuestionnaire,
 } from "../../utils/api";
 import { useError } from "../../contexts/ErrorContext";
 import { formatTime } from "../../utils/formatTime";
+import { formatDateTashkent, formatDateOnlyTashkent } from "../../utils/formatDate";
 import { lessons } from "../../utils/lessons";
 import { categoris } from "../../utils/generateCategories";
 import { useSearchParams } from "react-router-dom";
+import { QUESTIONS } from "../../utils/questionnaireQuestions";
 
 // Helper function to get reading title
 const getReadingTitle = (readingId, lessonId) => {
@@ -83,6 +86,7 @@ const Students = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [studentDetails, setStudentDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  const [questionnaireData, setQuestionnaireData] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const { showError } = useError();
   
@@ -143,8 +147,12 @@ const Students = () => {
   const handleViewHistory = async (studentId) => {
     try {
       setLoadingDetails(true);
-      const response = await getStudentById(studentId);
-      setStudentDetails(response.data.data);
+      const [detailsResponse, questionnaireResponse] = await Promise.all([
+        getStudentById(studentId),
+        getStudentQuestionnaire(studentId).catch(() => ({ data: { data: [] } })),
+      ]);
+      setStudentDetails(detailsResponse.data.data);
+      setQuestionnaireData(questionnaireResponse.data.data);
       setSelectedStudent(studentId);
     } catch (error) {
       showError(error?.response?.data?.message || "Failed to load student details");
@@ -156,6 +164,7 @@ const Students = () => {
   const handleCloseModal = () => {
     setSelectedStudent(null);
     setStudentDetails(null);
+    setQuestionnaireData(null);
   };
 
   // CRUD handlers
@@ -669,7 +678,7 @@ const Students = () => {
                         Joined Date
                       </Typography>
                       <Typography variant="body1" gutterBottom>
-                        {new Date(studentDetails.student.createdAt).toLocaleDateString()}
+                        {formatDateOnlyTashkent(studentDetails.student.createdAt)}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -793,7 +802,7 @@ const Students = () => {
                               </TableCell>
                               <TableCell>
                                 {reading.completed && reading.completedAt
-                                  ? new Date(reading.completedAt).toLocaleString()
+                                  ? formatDateTashkent(reading.completedAt)
                                   : "-"}
                               </TableCell>
                             </TableRow>
@@ -804,6 +813,127 @@ const Students = () => {
                   )}
                 </CardContent>
               </Card>
+
+              {/* Questionnaire Responses */}
+              {questionnaireData && questionnaireData.length > 0 && (
+                <Card sx={{ mb: 3 }}>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      Reading Strategies Questionnaire Responses
+                    </Typography>
+                    {questionnaireData.map((q) => (
+                      <Box key={q._id} sx={{ mb: 3, p: 2, border: "1px solid", borderColor: "divider", borderRadius: 1 }}>
+                        <Typography variant="subtitle1" gutterBottom>
+                          {q.type === "pre" ? "Pre-Questionnaire (Before Lesson 1)" : "Post-Questionnaire (After Lesson 12)"}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                          Submitted: {formatDateTashkent(q.createdAt)}
+                        </Typography>
+                        
+                        <Grid container spacing={2} sx={{ mt: 1 }}>
+                          <Grid size={{ xs: 12, md: 4 }}>
+                            <Paper sx={{ p: 2, textAlign: "center" }}>
+                              <Typography variant="h6" color="primary">
+                                {q.globAverage.toFixed(2)}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary">
+                                Global Reading Strategies
+                              </Typography>
+                              <Chip
+                                label={q.globLevel}
+                                color={q.globLevel === "High" ? "success" : q.globLevel === "Medium" ? "warning" : "error"}
+                                size="small"
+                                sx={{ mt: 1 }}
+                              />
+                            </Paper>
+                          </Grid>
+                          <Grid size={{ xs: 12, md: 4 }}>
+                            <Paper sx={{ p: 2, textAlign: "center" }}>
+                              <Typography variant="h6" color="secondary">
+                                {q.probAverage.toFixed(2)}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary">
+                                Problem Solving Strategies
+                              </Typography>
+                              <Chip
+                                label={q.probLevel}
+                                color={q.probLevel === "High" ? "success" : q.probLevel === "Medium" ? "warning" : "error"}
+                                size="small"
+                                sx={{ mt: 1 }}
+                              />
+                            </Paper>
+                          </Grid>
+                          <Grid size={{ xs: 12, md: 4 }}>
+                            <Paper sx={{ p: 2, textAlign: "center" }}>
+                              <Typography variant="h6" color="info.main">
+                                {q.supAverage.toFixed(2)}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary">
+                                Support Reading Strategies
+                              </Typography>
+                              <Chip
+                                label={q.supLevel}
+                                color={q.supLevel === "High" ? "success" : q.supLevel === "Medium" ? "warning" : "error"}
+                                size="small"
+                                sx={{ mt: 1 }}
+                              />
+                            </Paper>
+                          </Grid>
+                        </Grid>
+
+                        <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: "block" }}>
+                          3.5 or higher = High | 2.5 – 3.4 = Medium | 2.4 or lower = Low
+                        </Typography>
+
+                        {/* Individual Question Answers */}
+                        <Box sx={{ mt: 2 }}>
+                          <Typography variant="subtitle2" gutterBottom>
+                            Individual Question Answers:
+                          </Typography>
+                          <TableContainer>
+                            <Table size="small">
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell><strong>Question</strong></TableCell>
+                                  <TableCell align="right"><strong>Answer</strong></TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {Object.entries(q.answers || {}).map(([questionNum, answer]) => {
+                                  const questionIndex = parseInt(questionNum) - 1;
+                                  const questionText = QUESTIONS[questionIndex] || `Question ${questionNum}`;
+                                  return (
+                                    <TableRow key={questionNum}>
+                                      <TableCell>
+                                        <Typography variant="body2">
+                                          <strong>{questionNum}.</strong> {questionText}
+                                        </Typography>
+                                      </TableCell>
+                                      <TableCell align="right">
+                                        <Chip label={answer} size="small" />
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </Box>
+                      </Box>
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
+
+              {questionnaireData && questionnaireData.length === 0 && (
+                <Card sx={{ mb: 3 }}>
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary" align="center" sx={{ py: 2 }}>
+                      No questionnaire responses found for this student
+                    </Typography>
+                  </CardContent>
+                </Card>
+              )}
             </Box>
           ) : (
             <Typography variant="body2" color="text.secondary" align="center" sx={{ py: 4 }}>

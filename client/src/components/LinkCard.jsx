@@ -17,6 +17,7 @@ const LinkCard = ({
   href = "#",
   completed = false,
   score = 0,
+  disabled = false,
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -25,21 +26,27 @@ const LinkCard = ({
       sx={{
         height: "100%",
         transition: "all 0.3s ease-in-out",
-        "&:hover": {
-          transform: "scale(1.05)",
-          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-          backgroundColor: "secondary.main",
-          "& h6, & p": {
-            color: "secondary.contrastText",
-          },
-        },
+        opacity: disabled ? 0.5 : 1,
+        cursor: disabled ? "not-allowed" : "pointer",
+        "&:hover": disabled
+          ? {}
+          : {
+              transform: "scale(1.05)",
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+              backgroundColor: "secondary.main",
+              "& h6, & p": {
+                color: "secondary.contrastText",
+              },
+            },
       }}
     >
       <CardActionArea
-        component={RouterLink}
-        to={href}
+        component={disabled ? "div" : RouterLink}
+        to={disabled ? "#" : href}
+        disabled={disabled}
         sx={{
           position: "relative",
+          pointerEvents: disabled ? "none" : "auto",
           // ribbon for completed
           "&:after": {
             content: "'completed'",

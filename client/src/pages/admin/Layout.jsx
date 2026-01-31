@@ -368,7 +368,7 @@ export default function Layout() {
           ))}
         </List> */}
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, px: 3, pt: 5, pb: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1, px: 3, pt: 10, pb: 3 }}>
         {
           <Suspense fallback={<div>Loading...</div>}>
             <Outlet />

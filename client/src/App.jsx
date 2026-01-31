@@ -26,6 +26,7 @@ import Readings from "./pages/Readings";
 import ReadingTest from "./pages/ReadingTest";
 import Register from "./pages/Register";
 import StudentDashboard from "./pages/StudentDashboard";
+import Questionnaire from "./pages/Questionnaire";
 import Unauthorized from "./pages/Unauthorized";
 import theme from "./theme";
 
@@ -123,6 +124,16 @@ function AppRoutes() {
             <BgVideoLayout user={user}>
               <ProtectedRoute allowedRoles={["student"]}>
                 <StudentDashboard />
+              </ProtectedRoute>
+            </BgVideoLayout>
+          }
+        />
+        <Route
+          path="/questionnaire/:type"
+          element={
+            <BgVideoLayout user={user}>
+              <ProtectedRoute allowedRoles={["student"]}>
+                <Questionnaire />
               </ProtectedRoute>
             </BgVideoLayout>
           }

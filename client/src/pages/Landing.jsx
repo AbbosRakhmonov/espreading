@@ -154,7 +154,7 @@ const Landing = () => {
           <Box className="hero-content">
             <Box className="hero-text">
               <Typography variant="h1" className="hero-title">
-                Investing in Knowledge and Your Future
+                Read Like a Psychologist. Think Like a Professional
               </Typography>
               <Typography variant="body1" className="hero-description">
                 Enhance your reading comprehension skills through interactive
@@ -460,9 +460,8 @@ const Landing = () => {
                     {testimonials.map((_, index) => (
                       <button
                         key={index}
-                        className={`carousel-dot ${
-                          index === currentTestimonial ? "active" : ""
-                        }`}
+                        className={`carousel-dot ${index === currentTestimonial ? "active" : ""
+                          }`}
                         onClick={() => handleDotClick(index)}
                         aria-label={`Go to testimonial ${index + 1}`}
                       />

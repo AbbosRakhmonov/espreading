@@ -3,7 +3,7 @@ import React from "react";
 import { useError } from "../contexts/ErrorContext";
 
 const GlobalErrorDisplay = () => {
-  const { error, clearError } = useError();
+  const { error, errorType, clearError } = useError();
 
   return (
     <Snackbar
@@ -12,7 +12,7 @@ const GlobalErrorDisplay = () => {
       onClose={clearError}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
     >
-      <Alert onClose={clearError} severity="error" sx={{ width: "100%" }}>
+      <Alert onClose={clearError} severity={errorType} sx={{ width: "100%" }}>
         {error}
       </Alert>
     </Snackbar>

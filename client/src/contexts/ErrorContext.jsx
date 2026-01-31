@@ -4,17 +4,25 @@ const ErrorContext = createContext();
 
 export const ErrorProvider = ({ children }) => {
   const [error, setError] = useState(null);
+  const [errorType, setErrorType] = useState("error"); // "error" or "success"
 
-  const showError = (message) => {
+  const showError = (message, type = "error") => {
     setError(message);
+    setErrorType(type);
     // Automatically clear the error after 5 seconds
-    setTimeout(() => setError(null), 5000);
+    setTimeout(() => {
+      setError(null);
+      setErrorType("error");
+    }, 5000);
   };
 
-  const clearError = () => setError(null);
+  const clearError = () => {
+    setError(null);
+    setErrorType("error");
+  };
 
   return (
-    <ErrorContext.Provider value={{ error, showError, clearError }}>
+    <ErrorContext.Provider value={{ error, errorType, showError, clearError }}>
       {children}
     </ErrorContext.Provider>
   );

@@ -1,0 +1,42 @@
+// Questions from the Survey of Reading Strategies (Mokhtari & Sheorey, 2002)
+export const QUESTIONS = [
+  "I have a purpose in mind when I read.",
+  "I take notes while reading to help me understand what I read.",
+  "I think about what I know to help me understand what I read.",
+  "I take an overall view of the text to see what it is about before reading it.",
+  "When text becomes difficult, I read aloud to help me understand what I read.",
+  "I think about whether the content of the text fits my reading purpose.",
+  "I read slowly and carefully to make sure I understand what I am reading.",
+  "I review the text first by noting its characteristics like length and organization.",
+  "I try to get back on track when I lose concentration.",
+  "I underline or circle information in the text to help me remember it.",
+  "I adjust my reading speed according to what I am reading.",
+  "When reading, I decide what to read closely and what to ignore.",
+  "I use reference materials (e.g. a dictionary) to help me understand what I read.",
+  "When text becomes difficult, I pay closer attention to what I am reading.",
+  "I use tables, figures, and pictures in text to increase my understanding.",
+  "I stop from time to time and think about what I am reading.",
+  "I use context clues to help me better understand what I am reading.",
+  "I paraphrase (restate ideas in my own words) to better understand what I read.",
+  "I try to picture or visualize information to help remember what I read.",
+  "I use typographical features like bold face and italics to identify key information.",
+  "I critically analyze and evaluate the information presented in the text.",
+  "I go back and forth in the text to find relationships among ideas in it.",
+  "I check my understanding when I come across new information.",
+  "I try to guess what the content of the text is about when I read.",
+  "When text becomes difficult, I re-read it to increase my understanding.",
+  "I ask myself questions I like to have answered in the text.",
+  "I check to see if my guesses about the text are right or wrong.",
+  "When I read, I guess the meaning of unknown words or phrases.",
+  "When reading, I translate from English into my native language.",
+  "When reading, I think about information in both English and my mother tongue.",
+];
+
+export const SCALE_LABELS = {
+  1: "I never or almost never do this",
+  2: "I do this only occasionally",
+  3: "I sometimes do this (About 50% of the time)",
+  4: "I usually do this",
+  5: "I always or almost always do this",
+};
+

@@ -23,13 +23,14 @@ import Grid from "@mui/material/Grid2";
 import { PieChart } from "@mui/x-charts/PieChart";
 import React, { useEffect, useState } from "react";
 import InfoCard from "../../components/InfoCard";
-import { getStatistics } from "../../utils/api";
+import { getStatistics, getQuestionnaireStatistics } from "../../utils/api";
 import { useError } from "../../contexts/ErrorContext";
 import { formatTime } from "../../utils/formatTime";
+import { formatDateTashkent, formatDateOnlyTashkent } from "../../utils/formatDate";
 
 const pieParams = {
-  height: 250,
-  margin: { right: 5 },
+  height: 300,
+  margin: { top: 20, right: 20, bottom: 80, left: 20 },
 };
 
 const colorPalettes = [
@@ -42,14 +43,23 @@ const colorPalettes = [
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [statistics, setStatistics] = useState(null);
+  const [questionnaireStats, setQuestionnaireStats] = useState(null);
   const { showError } = useError();
 
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
         setLoading(true);
-        const response = await getStatistics();
-        setStatistics(response.data.data);
+        const [statsResponse, preQResponse, postQResponse] = await Promise.all([
+          getStatistics(),
+          getQuestionnaireStatistics("pre"),
+          getQuestionnaireStatistics("post"),
+        ]);
+        setStatistics(statsResponse.data.data);
+        setQuestionnaireStats({
+          pre: preQResponse.data.data,
+          post: postQResponse.data.data,
+        });
       } catch (error) {
         showError(error?.response?.data?.message || "Failed to load statistics");
       } finally {
@@ -112,7 +122,7 @@ const Dashboard = () => {
 
   return (
     <Box>
-      <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Container maxWidth="xl" sx={{ py: 2, pt: 4 }}>
         {/* Overview Cards */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -182,10 +192,19 @@ const Dashboard = () => {
                           series={[
                             {
                               data: scoreData,
+                              innerRadius: 30,
+                              outerRadius: 100,
                               arcLabel: (item) => `${item.percentage}%`,
-                              arcLabelMinAngle: 20,
+                              arcLabelMinAngle: 15,
                             },
                           ]}
+                          slotProps={{
+                            legend: {
+                              direction: "row",
+                              position: { vertical: "bottom", horizontal: "middle" },
+                              padding: { top: 20 },
+                            },
+                          }}
                           {...pieParams}
                         />
                       ) : (
@@ -342,7 +361,7 @@ const Dashboard = () => {
                       </TableCell>
                       <TableCell>
                         {progress.completed && progress.completedAt
-                          ? new Date(progress.completedAt).toLocaleDateString()
+                          ? formatDateOnlyTashkent(progress.completedAt)
                           : "-"}
                       </TableCell>
                     </TableRow>
@@ -395,7 +414,7 @@ const Dashboard = () => {
                         </TableCell>
                         <TableCell>
                           {completion.completedAt
-                            ? new Date(completion.completedAt).toLocaleString()
+                            ? formatDateTashkent(completion.completedAt)
                             : "N/A"}
                         </TableCell>
                       </TableRow>
@@ -405,6 +424,263 @@ const Dashboard = () => {
               </TableContainer>
             </CardContent>
           </Card>
+        )}
+
+        {/* Questionnaire Statistics */}
+        {questionnaireStats && (
+          <>
+            {/* Overall Questionnaire Statistics */}
+            <Card sx={{ mb: 4 }}>
+              <CardContent>
+                <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 3 }}>
+                  Reading Strategies Questionnaire - Overall Statistics
+                </Typography>
+                <Grid container spacing={3}>
+                  {/* Pre-Questionnaire */}
+                  {questionnaireStats.pre && questionnaireStats.pre.overall && (
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Paper sx={{ p: 2 }}>
+                        <Typography variant="h6" align="center" gutterBottom>
+                          Pre-Questionnaire (Before Lesson 1)
+                        </Typography>
+                        <PieChart
+                          colors={["#3498db", "#f1c40f", "#e74c3c"]}
+                          series={[
+                            {
+                              data: [
+                                {
+                                  label: `Global (${questionnaireStats.pre.overall.globAverage.toFixed(2)})`,
+                                  value: questionnaireStats.pre.overall.globAverage,
+                                },
+                                {
+                                  label: `Problem Solving (${questionnaireStats.pre.overall.probAverage.toFixed(2)})`,
+                                  value: questionnaireStats.pre.overall.probAverage,
+                                },
+                                {
+                                  label: `Support (${questionnaireStats.pre.overall.supAverage.toFixed(2)})`,
+                                  value: questionnaireStats.pre.overall.supAverage,
+                                },
+                              ],
+                              innerRadius: 30,
+                              outerRadius: 100,
+                              arcLabel: (item) => `${item.value.toFixed(2)}`,
+                              arcLabelMinAngle: 15,
+                            },
+                          ]}
+                          slotProps={{
+                            legend: {
+                              direction: "row",
+                              position: { vertical: "bottom", horizontal: "middle" },
+                              padding: { top: 20 },
+                            },
+                          }}
+                          {...pieParams}
+                        />
+                        <Box sx={{ mt: 2, textAlign: "center" }}>
+                          <Typography variant="body2">
+                            <strong>Global:</strong> {questionnaireStats.pre.overall.globAverage.toFixed(2)} ({questionnaireStats.pre.overall.globLevel}) |{" "}
+                            <strong>Problem Solving:</strong> {questionnaireStats.pre.overall.probAverage.toFixed(2)} ({questionnaireStats.pre.overall.probLevel}) |{" "}
+                            <strong>Support:</strong> {questionnaireStats.pre.overall.supAverage.toFixed(2)} ({questionnaireStats.pre.overall.supLevel})
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
+                            3.5 or higher = High | 2.5 – 3.4 = Medium | 2.4 or lower = Low
+                          </Typography>
+                        </Box>
+                      </Paper>
+                    </Grid>
+                  )}
+
+                  {/* Post-Questionnaire */}
+                  {questionnaireStats.post && questionnaireStats.post.overall && (
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Paper sx={{ p: 2 }}>
+                        <Typography variant="h6" align="center" gutterBottom>
+                          Post-Questionnaire (After Lesson 12)
+                        </Typography>
+                        <PieChart
+                          colors={["#2ecc71", "#f39c12", "#9b59b6"]}
+                          series={[
+                            {
+                              data: [
+                                {
+                                  label: `Global (${questionnaireStats.post.overall.globAverage.toFixed(2)})`,
+                                  value: questionnaireStats.post.overall.globAverage,
+                                },
+                                {
+                                  label: `Problem Solving (${questionnaireStats.post.overall.probAverage.toFixed(2)})`,
+                                  value: questionnaireStats.post.overall.probAverage,
+                                },
+                                {
+                                  label: `Support (${questionnaireStats.post.overall.supAverage.toFixed(2)})`,
+                                  value: questionnaireStats.post.overall.supAverage,
+                                },
+                              ],
+                              innerRadius: 30,
+                              outerRadius: 100,
+                              arcLabel: (item) => `${item.value.toFixed(2)}`,
+                              arcLabelMinAngle: 15,
+                            },
+                          ]}
+                          slotProps={{
+                            legend: {
+                              direction: "row",
+                              position: { vertical: "bottom", horizontal: "middle" },
+                              padding: { top: 20 },
+                            },
+                          }}
+                          {...pieParams}
+                        />
+                        <Box sx={{ mt: 2, textAlign: "center" }}>
+                          <Typography variant="body2">
+                            <strong>Global:</strong> {questionnaireStats.post.overall.globAverage.toFixed(2)} ({questionnaireStats.post.overall.globLevel}) |{" "}
+                            <strong>Problem Solving:</strong> {questionnaireStats.post.overall.probAverage.toFixed(2)} ({questionnaireStats.post.overall.probLevel}) |{" "}
+                            <strong>Support:</strong> {questionnaireStats.post.overall.supAverage.toFixed(2)} ({questionnaireStats.post.overall.supLevel})
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
+                            3.5 or higher = High | 2.5 – 3.4 = Medium | 2.4 or lower = Low
+                          </Typography>
+                        </Box>
+                      </Paper>
+                    </Grid>
+                  )}
+                </Grid>
+              </CardContent>
+            </Card>
+
+            {/* Questionnaire Statistics by Institution */}
+            {questionnaireStats.pre && questionnaireStats.pre.byInstitution && questionnaireStats.pre.byInstitution.length > 0 && (
+              <Card sx={{ mb: 4 }}>
+                <CardContent>
+                  <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 3 }}>
+                    Pre-Questionnaire Statistics by Institution
+                  </Typography>
+                  <Grid container spacing={3}>
+                    {questionnaireStats.pre.byInstitution.map((inst, index) => (
+                      <Grid size={{ xs: 12, md: 6, lg: 4 }} key={inst.university}>
+                        <Paper sx={{ p: 2, height: "100%" }}>
+                          <Typography variant="h6" align="center" gutterBottom>
+                            {inst.university}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary" align="center" gutterBottom>
+                            {inst.count} {inst.count === 1 ? "response" : "responses"}
+                          </Typography>
+                          <PieChart
+                            colors={colorPalettes[index % colorPalettes.length]}
+                            series={[
+                              {
+                                data: [
+                                  {
+                                    label: `Global (${inst.globAverage.toFixed(2)})`,
+                                    value: inst.globAverage,
+                                  },
+                                  {
+                                    label: `Problem Solving (${inst.probAverage.toFixed(2)})`,
+                                    value: inst.probAverage,
+                                  },
+                                  {
+                                    label: `Support (${inst.supAverage.toFixed(2)})`,
+                                    value: inst.supAverage,
+                                  },
+                                ],
+                                innerRadius: 30,
+                                outerRadius: 100,
+                                arcLabel: (item) => `${item.value.toFixed(2)}`,
+                                arcLabelMinAngle: 15,
+                              },
+                            ]}
+                            slotProps={{
+                              legend: {
+                                direction: "row",
+                                position: { vertical: "bottom", horizontal: "middle" },
+                                padding: { top: 20 },
+                              },
+                            }}
+                            {...pieParams}
+                          />
+                          <Box sx={{ mt: 2, textAlign: "center" }}>
+                            <Typography variant="body2">
+                              <strong>Global:</strong> {inst.globAverage.toFixed(2)} ({inst.globLevel}) |{" "}
+                              <strong>Problem Solving:</strong> {inst.probAverage.toFixed(2)} ({inst.probLevel}) |{" "}
+                              <strong>Support:</strong> {inst.supAverage.toFixed(2)} ({inst.supLevel})
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
+                              3.5 or higher = High | 2.5 – 3.4 = Medium | 2.4 or lower = Low
+                            </Typography>
+                          </Box>
+                        </Paper>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Post-Questionnaire Statistics by Institution */}
+            {questionnaireStats.post && questionnaireStats.post.byInstitution && questionnaireStats.post.byInstitution.length > 0 && (
+              <Card sx={{ mb: 4 }}>
+                <CardContent>
+                  <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 3 }}>
+                    Post-Questionnaire Statistics by Institution
+                  </Typography>
+                  <Grid container spacing={3}>
+                    {questionnaireStats.post.byInstitution.map((inst, index) => (
+                      <Grid size={{ xs: 12, md: 6, lg: 4 }} key={inst.university}>
+                        <Paper sx={{ p: 2, height: "100%" }}>
+                          <Typography variant="h6" align="center" gutterBottom>
+                            {inst.university}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary" align="center" gutterBottom>
+                            {inst.count} {inst.count === 1 ? "response" : "responses"}
+                          </Typography>
+                          <PieChart
+                            colors={colorPalettes[index % colorPalettes.length]}
+                            series={[
+                              {
+                                data: [
+                                  {
+                                    label: `Global (${inst.globAverage.toFixed(2)})`,
+                                    value: inst.globAverage,
+                                  },
+                                  {
+                                    label: `Problem Solving (${inst.probAverage.toFixed(2)})`,
+                                    value: inst.probAverage,
+                                  },
+                                  {
+                                    label: `Support (${inst.supAverage.toFixed(2)})`,
+                                    value: inst.supAverage,
+                                  },
+                                ],
+                                innerRadius: 30,
+                                outerRadius: 100,
+                              },
+                            ]}
+                            slotProps={{
+                              legend: {
+                                direction: "column",
+                                position: { vertical: "middle", horizontal: "right" },
+                                padding: 0,
+                              },
+                            }}
+                            {...pieParams}
+                          />
+                          <Box sx={{ mt: 2, textAlign: "center" }}>
+                            <Typography variant="body2">
+                              <strong>Global:</strong> {inst.globAverage.toFixed(2)} ({inst.globLevel}) |{" "}
+                              <strong>Problem Solving:</strong> {inst.probAverage.toFixed(2)} ({inst.probLevel}) |{" "}
+                              <strong>Support:</strong> {inst.supAverage.toFixed(2)} ({inst.supLevel})
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: "block" }}>
+                              3.5 or higher = High | 2.5 – 3.4 = Medium | 2.4 or lower = Low
+                            </Typography>
+                          </Box>
+                        </Paper>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </CardContent>
+              </Card>
+            )}
+          </>
         )}
       </Container>
     </Box>

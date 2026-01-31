@@ -23,6 +23,7 @@ import {
 import Grid from "@mui/material/Grid2";
 import { useError } from "../../contexts/ErrorContext";
 import { getActivityLogs as fetchActivityLogs } from "../../utils/api";
+import { formatDateTashkent } from "../../utils/formatDate";
 
 const ActivityLogs = () => {
   const [loading, setLoading] = useState(true);
@@ -190,7 +191,7 @@ const ActivityLogs = () => {
                   logs.map((log) => (
                     <TableRow key={log._id} hover>
                       <TableCell>
-                        {new Date(log.createdAt).toLocaleString()}
+                        {formatDateTashkent(log.createdAt)}
                       </TableCell>
                       <TableCell>
                         {log.admin?.fullName || "Unknown"} ({log.admin?.email || "N/A"})
