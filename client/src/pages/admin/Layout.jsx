@@ -7,6 +7,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import SchoolIcon from "@mui/icons-material/School";
 import HistoryIcon from "@mui/icons-material/History";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { default as MuiAppBar } from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -252,6 +253,11 @@ export default function Layout() {
               title: "Activity Logs",
               path: "activity-logs",
               icon: <HistoryIcon />,
+            },
+            {
+              title: "AI",
+              path: "ai",
+              icon: <SmartToyIcon />,
             },
           ].map((text, index) => (
             <ListItem key={text.title} disablePadding sx={{ display: "block" }}>

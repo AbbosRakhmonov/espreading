@@ -12,9 +12,16 @@ import {
   CardContent,
   Avatar,
   CircularProgress,
+  Drawer,
+  List,
+  ListItem,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 import PersonIcon from "@mui/icons-material/Person";
 import SchoolIcon from "@mui/icons-material/School";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
@@ -31,11 +38,22 @@ import MonitorIcon from "@mui/icons-material/Monitor";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import "./Landing.css";
 
+const NAV_LINKS = [
+  { href: "#home", label: "Home" },
+  { href: "#services", label: "Services" },
+  { href: "#about", label: "About" },
+  { href: "#courses", label: "Courses" },
+  { href: "#contact", label: "Contact" },
+];
+
 const Landing = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [email, setEmail] = useState("");
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleGetStarted = () => {
     navigate("/login");
@@ -114,34 +132,78 @@ const Landing = () => {
             </Typography>
           </Box>
 
-          <Box className="nav-section">
-            <a href="#home" className="nav-link">
-              Home
-            </a>
-            <a href="#services" className="nav-link">
-              Services
-            </a>
-            <a href="#about" className="nav-link">
-              About
-            </a>
-            <a href="#courses" className="nav-link">
-              Courses
-            </a>
-            <a href="#contact" className="nav-link">
-              Contact
-            </a>
-          </Box>
+          {!isMobile && (
+            <Box className="nav-section">
+              {NAV_LINKS.map(({ href, label }) => (
+                <a key={href} href={href} className="nav-link">
+                  {label}
+                </a>
+              ))}
+            </Box>
+          )}
 
           <Box className="header-actions">
-            <Button className="login-btn" onClick={handleLogin}>
-              Login
-            </Button>
-            <Button className="signup-btn" onClick={handleSignUp}>
-              Sign Up
-            </Button>
+            {isMobile && (
+              <IconButton
+                className="menu-btn"
+                onClick={() => setMobileMenuOpen(true)}
+                aria-label="Open menu"
+                edge="end"
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
+            {(!isMobile || !mobileMenuOpen) && (
+              <>
+                <Button className="login-btn" onClick={handleLogin}>
+                  Login
+                </Button>
+                <Button className="signup-btn" onClick={handleSignUp}>
+                  Sign Up
+                </Button>
+              </>
+            )}
           </Box>
         </Container>
       </header>
+
+      <Drawer
+        anchor="right"
+        open={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        classes={{ paper: "landing-drawer-paper" }}
+        sx={{ "& .MuiDrawer-paper": { boxSizing: "border-box", width: { xs: "100%", sm: 320 } } }}
+      >
+        <Box className="drawer-header">
+          <Typography variant="h6" className="logo-text">
+            ESPREADING
+          </Typography>
+          <IconButton onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <List className="drawer-list">
+          {NAV_LINKS.map(({ href, label }) => (
+            <ListItem key={href} disablePadding>
+              <a
+                href={href}
+                className="nav-link drawer-nav-link"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {label}
+              </a>
+            </ListItem>
+          ))}
+        </List>
+        <Box className="drawer-actions">
+          <Button className="login-btn drawer-btn" fullWidth onClick={handleLogin}>
+            Login
+          </Button>
+          <Button className="signup-btn drawer-btn" fullWidth onClick={handleSignUp}>
+            Sign Up
+          </Button>
+        </Box>
+      </Drawer>
 
       {/* Hero Section */}
       <section className="hero-section" id="home">
@@ -171,38 +233,46 @@ const Landing = () => {
                   className="email-input"
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        border: "none",
-                      },
-                      "&:hover fieldset": {
-                        border: "none",
-                      },
-                      "&.Mui-focused fieldset": {
-                        border: "none",
-                      },
+                      "& fieldset": { border: "none" },
+                      "&:hover fieldset": { border: "none" },
+                      "&.Mui-focused fieldset": { border: "none" },
                     },
                   }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Button
-                          className="get-started-btn"
-                          onClick={handleGetStarted}
-                          endIcon={<ArrowForwardIcon />}
-                        >
-                          Get Started
-                        </Button>
-                      </InputAdornment>
-                    ),
-                  }}
+                  InputProps={
+                    !isMobile
+                      ? {
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <Button
+                                className="get-started-btn"
+                                onClick={handleGetStarted}
+                                endIcon={<ArrowForwardIcon />}
+                              >
+                                Get Started
+                              </Button>
+                            </InputAdornment>
+                          ),
+                        }
+                      : undefined
+                  }
                 />
+                {isMobile && (
+                  <Button
+                    className="get-started-btn get-started-btn-mobile"
+                    onClick={handleGetStarted}
+                    endIcon={<ArrowForwardIcon />}
+                    fullWidth
+                  >
+                    Get Started
+                  </Button>
+                )}
               </Box>
             </Box>
 
             <Box className="hero-illustration">
               <div className="illustration-person">
                 <img
-                  src="https://www.techwomen.org/wp-content/uploads/2019/03/2-1.jpg"
+                  src="./images/2-1.jpg"
                   alt="Student"
                   className="person-image"
                 />

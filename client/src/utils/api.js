@@ -95,6 +95,38 @@ const getStudentQuestionnaire = async (studentId) => {
   return await api.get(`/api/v1/questionnaire/student/${studentId}`);
 };
 
+const getAIStatus = async () => {
+  return await api.get("/api/v1/ai/status");
+};
+
+const getAIChatHistory = async (readingId) => {
+  return await api.get("/api/v1/ai/history", { params: { readingId } });
+};
+
+const sendAIChat = async (readingId, mode, messages) => {
+  return await api.post("/api/v1/ai/chat", { readingId, mode, messages });
+};
+
+const getAISetting = async () => {
+  return await api.get("/api/v1/admin/ai/setting");
+};
+
+const updateAISetting = async (enabled) => {
+  return await api.put("/api/v1/admin/ai/setting", { enabled });
+};
+
+const getAIStatistics = async () => {
+  return await api.get("/api/v1/admin/ai/statistics");
+};
+
+const getStudentAIData = async (studentId) => {
+  return await api.get(`/api/v1/admin/students/${studentId}/ai`);
+};
+
+const adminAskAboutStudent = async (studentId, messages) => {
+  return await api.post("/api/v1/admin/ai/ask-student", { studentId, messages });
+};
+
 export default api;
 
 export {
@@ -114,4 +146,12 @@ export {
   getAllQuestionnaires,
   getQuestionnaireStatistics,
   getStudentQuestionnaire,
+  getAIStatus,
+  getAIChatHistory,
+  sendAIChat,
+  getAISetting,
+  updateAISetting,
+  getAIStatistics,
+  getStudentAIData,
+  adminAskAboutStudent,
 };

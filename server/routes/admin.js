@@ -11,6 +11,13 @@ const {
   exportStatistics,
   getActivityLogs,
 } = require("../controllers/admin");
+const {
+  getAISetting,
+  updateAISetting,
+  getAIStatistics,
+  getStudentAIData,
+  adminAskAboutStudent,
+} = require("../controllers/aiAdmin");
 const { protect } = require("../middleware/auth");
 const { accessToRoute } = require("../middleware/auth");
 
@@ -27,5 +34,11 @@ router.post("/students", createStudent);
 router.put("/students/:id", updateStudent);
 router.delete("/students/:id", deleteStudent);
 router.get("/activity-logs", getActivityLogs);
+
+router.get("/ai/setting", getAISetting);
+router.put("/ai/setting", updateAISetting);
+router.get("/ai/statistics", getAIStatistics);
+router.get("/students/:id/ai", getStudentAIData);
+router.post("/ai/ask-student", adminAskAboutStudent);
 
 module.exports = router;

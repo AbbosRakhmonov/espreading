@@ -18,6 +18,7 @@ const ActivityLogSchema = new mongoose.Schema(
         "export_statistics",
         "view_student",
         "view_statistics",
+        "ai_toggle",
       ],
     },
     targetType: {

@@ -108,6 +108,55 @@
   gap: 15px;
 }
 
+.menu-btn {
+  color: #2d3748 !important;
+  padding: 8px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+}
+
+/* Mobile drawer */
+.landing-drawer-paper {
+  padding: 0;
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.drawer-header .logo-text {
+  font-size: 1.25rem !important;
+}
+
+.drawer-list {
+  padding: 16px !important;
+}
+
+.drawer-nav-link {
+  display: block;
+  width: 100%;
+  padding: 14px 16px !important;
+  font-size: 1rem;
+  min-height: 48px;
+  box-sizing: border-box;
+}
+
+.drawer-actions {
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.drawer-btn {
+  min-height: 48px !important;
+}
+
 .login-btn {
   color: #2d3748 !important;
   text-transform: none !important;
@@ -257,6 +306,11 @@
   margin-top: 30px;
 }
 
+.get-started-btn-mobile {
+  margin-top: 16px !important;
+  min-height: 48px !important;
+}
+
 .email-input {
   background: white !important;
   border-radius: 50px !important;
@@ -300,7 +354,6 @@
   align-items: center;
   justify-content: center;
   animation: fadeInRight 1s ease-out 0.3s both;
-  min-width: 500px;
 }
 
 @keyframes fadeInRight {
@@ -780,6 +833,8 @@
   color: white !important;
   width: 45px !important;
   height: 45px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
   transition: all 0.3s ease !important;
   box-shadow: 0 4px 15px rgba(77, 182, 172, 0.3) !important;
 }
@@ -1263,63 +1318,289 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+  .hero-content {
+    gap: 40px;
+  }
+
+  .hero-title {
+    font-size: 2.75rem !important;
+  }
+
+  .hero-illustration {
+    height: 500px;
+  }
+
+  .features-grid {
+    gap: 24px;
+  }
+
+  .benefits-grid {
+    gap: 24px;
+  }
+
+  .testimonials-content,
+  .analytics-content {
+    gap: 40px;
+  }
+}
+
 @media (max-width: 968px) {
   .hero-content,
-  .teachers-content,
-  .analytics-content {
+  .analytics-content,
+  .testimonials-content {
     grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .hero-content {
+    text-align: center;
+  }
+
+  .hero-text {
+    order: 1;
+  }
+
+  .hero-illustration {
+    order: 2;
+    height: 420px;
+    min-height: 380px;
   }
 
   .features-grid,
   .benefits-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .footer-content {
     grid-template-columns: 1fr;
+    gap: 32px;
   }
 
-  .header-container {
-    flex-wrap: wrap;
-  }
-
-  .nav-section {
-    order: 3;
-    width: 100%;
-    justify-content: center;
-    margin-top: 15px;
-  }
-
-  .hero-title {
-    font-size: 2.5rem !important;
-  }
-
-  .cta-content {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-@media (max-width: 600px) {
-  .hero-section {
-    padding: 60px 10px;
-  }
-
-  .hero-title {
-    font-size: 2rem !important;
+  .section-header {
+    margin-bottom: 40px;
   }
 
   .section-title {
     font-size: 2rem !important;
   }
 
-  .stat-card {
-    position: relative !important;
-    margin: 10px 0;
+  .hero-title {
+    font-size: 2.25rem !important;
+  }
+
+  .cta-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .cta-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .testimonials-left {
+    order: 2;
+  }
+
+  .testimonials-right {
+    order: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-header {
+    padding: 12px 0;
+  }
+
+  .header-container {
+    gap: 16px;
+  }
+
+  .logo-icon {
+    font-size: 28px !important;
+  }
+
+  .logo-text {
+    font-size: 1.2rem !important;
+  }
+
+  .hero-section {
+    padding: 100px 16px 60px;
+    margin-top: 60px;
+  }
+
+  .hero-title {
+    font-size: 1.85rem !important;
+    margin-bottom: 16px !important;
+  }
+
+  .hero-description {
+    font-size: 1rem !important;
+    margin-bottom: 24px !important;
   }
 
   .hero-illustration {
     height: auto;
-    min-height: 300px;
+    min-height: 320px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    place-items: center;
+  }
+
+  .illustration-person {
+    grid-column: 1;
+  }
+
+  .hero-illustration .stat-card {
+    position: relative !important;
+    margin: 0 !important;
+    max-width: 100%;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+  }
+
+  .hero-illustration .stat-card-1 {
+    grid-column: 1;
+  }
+
+  .hero-illustration .stat-card-2 {
+    grid-column: 1;
+  }
+
+  .hero-illustration .stat-card-3 {
+    grid-column: 1;
+  }
+
+  .features-section,
+  .why-choose-section,
+  .testimonials-section,
+  .analytics-section {
+    padding: 60px 16px;
+  }
+
+  .feature-item {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .feature-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 36px !important;
+  }
+
+  .section-title {
+    font-size: 1.75rem !important;
+  }
+
+  .cta-banner {
+    padding: 48px 16px;
+  }
+
+  .cta-question {
+    font-size: 1.5rem !important;
+  }
+
+  .cta-btn-white,
+  .cta-btn-teal {
+    min-height: 48px !important;
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .landing-footer {
+    padding: 40px 16px 24px;
+  }
+
+  .footer-email {
+    flex-direction: column;
+  }
+
+  .footer-arrow {
+    align-self: stretch;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-section {
+    padding: 90px 12px 48px;
+    margin-top: 56px;
+  }
+
+  .hero-title {
+    font-size: 1.6rem !important;
+  }
+
+  .section-title {
+    font-size: 1.5rem !important;
+  }
+
+  .hero-illustration {
+    min-height: 260px;
+  }
+
+  .illustration-person {
+    width: 200px;
+    height: 200px;
+  }
+
+  .stat-icon-container {
+    width: 72px;
+    height: 72px;
+  }
+
+  .stat-icon {
+    font-size: 36px !important;
+  }
+
+  .login-btn,
+  .signup-btn {
+    min-height: 44px !important;
+    padding: 8px 16px !important;
+  }
+
+  .achievement-number {
+    font-size: 2.25rem !important;
+  }
+
+  .achievement-stats {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.4rem !important;
+  }
+
+  .hero-illustration {
+    height: 260px;
+    min-height: 220px;
+  }
+
+  .illustration-person {
+    width: 160px;
+    height: 160px;
+  }
+
+  .section-title {
+    font-size: 1.35rem !important;
+  }
+
+  .benefit-card .benefit-icon {
+    font-size: 40px !important;
+  }
+
+  .testimonial-avatar {
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 0.9rem !important;
   }
 }

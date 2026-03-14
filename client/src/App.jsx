@@ -17,6 +17,9 @@ import Dashboard from "./pages/admin/Dashboard";
 import Layout from "./pages/admin/Layout";
 import Students from "./pages/admin/Students";
 import Universities from "./pages/admin/Universities";
+import AIOverview from "./pages/admin/AIOverview";
+import AISettings from "./pages/admin/AISettings";
+import AdminAskStudent from "./pages/admin/AdminAskStudent";
 import Analytics from "./pages/admin/Analytics";
 import ActivityLogs from "./pages/admin/ActivityLogs";
 import Categories from "./pages/Categories";
@@ -176,6 +179,9 @@ function AppRoutes() {
           <Route path="universities" element={<Universities />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="activity-logs" element={<ActivityLogs />} />
+          <Route path="ai" element={<AIOverview />} />
+          <Route path="ai/settings" element={<AISettings />} />
+          <Route path="ai/ask-student" element={<AdminAskStudent />} />
         </Route>
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="*" element={<Navigate to="/unauthorized" />} />

@@ -46,6 +46,8 @@ import {
   getStudentQuestionnaire,
 } from "../../utils/api";
 import { useError } from "../../contexts/ErrorContext";
+import { useStudentAIData } from "../../hooks/useStudentAIData";
+import CorrespondenceThread from "../../components/CorrespondenceThread";
 import { formatTime } from "../../utils/formatTime";
 import { formatDateTashkent, formatDateOnlyTashkent } from "../../utils/formatDate";
 import { lessons } from "../../utils/lessons";
@@ -103,7 +105,10 @@ const Students = () => {
     university: "",
   });
   const [formLoading, setFormLoading] = useState(false);
-  
+  const [expandedAIThread, setExpandedAIThread] = useState(null);
+
+  const { data: studentAIData, loading: loadingAIData } = useStudentAIData(selectedStudent);
+
   // Date range filter
   const startDateFilter = searchParams.get("startDate") || "";
   const endDateFilter = searchParams.get("endDate") || "";
@@ -934,6 +939,66 @@ const Students = () => {
                   </CardContent>
                 </Card>
               )}
+
+              {/* AI help usage */}
+              <Card sx={{ mb: 3, borderLeft: 4, borderColor: "#0d9488" }}>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    AI help usage
+                  </Typography>
+                  {loadingAIData ? (
+                    <Box display="flex" justifyContent="center" py={2}>
+                      <CircularProgress size={24} />
+                    </Box>
+                  ) : studentAIData?.conversations?.length > 0 ? (
+                    <>
+                      <Grid container spacing={2} sx={{ mb: 2 }}>
+                        <Grid size={{ xs: 6, sm: 3 }}>
+                          <Paper variant="outlined" sx={{ p: 1.5, textAlign: "center" }}>
+                            <Typography variant="h6">{studentAIData.conversations.length}</Typography>
+                            <Typography variant="caption" color="text.secondary">Conversations</Typography>
+                          </Paper>
+                        </Grid>
+                        <Grid size={{ xs: 6, sm: 3 }}>
+                          <Paper variant="outlined" sx={{ p: 1.5, textAlign: "center" }}>
+                            <Typography variant="h6">
+                              {studentAIData.conversations.reduce((acc, c) => acc + (c.messageCount || 0), 0)}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">Messages</Typography>
+                          </Paper>
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 6 }}>
+                          <Typography variant="caption" color="text.secondary" display="block">Modes</Typography>
+                          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}>
+                            {[...new Set(studentAIData.conversations.map((c) => c.mode).filter(Boolean))].map((mode) => (
+                              <Chip key={mode} label={mode} size="small" variant="outlined" />
+                            ))}
+                            {studentAIData.conversations.every((c) => !c.mode) && (
+                              <Typography variant="caption" color="text.secondary">—</Typography>
+                            )}
+                          </Box>
+                        </Grid>
+                      </Grid>
+                      <Typography variant="subtitle2" gutterBottom>Correspondence by reading</Typography>
+                      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                        {studentAIData.conversations.map((conv) => (
+                          <CorrespondenceThread
+                            key={conv.conversationId}
+                            readingTitle={conv.readingTitle}
+                            messages={conv.messages ?? []}
+                            expanded={expandedAIThread === conv.conversationId}
+                            onToggle={() => setExpandedAIThread((id) => (id === conv.conversationId ? null : conv.conversationId))}
+                          />
+                        ))}
+                      </Box>
+                    </>
+                  ) : (
+                    <Typography variant="body2" color="text.secondary">
+                      No AI help usage for this student
+                    </Typography>
+                  )}
+                </CardContent>
+              </Card>
             </Box>
           ) : (
             <Typography variant="body2" color="text.secondary" align="center" sx={{ py: 4 }}>

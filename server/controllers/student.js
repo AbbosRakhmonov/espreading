@@ -3,6 +3,7 @@ const ErrorResponse = require("../utils/errorResponse");
 const Reading = require("../models/Reading");
 const User = require("../models/User");
 const { getReadingMeta } = require("../utils/readingCatalog");
+const { getAnswerKeyForReading } = require("../utils/answerKeys");
 
 // Mapping of reading ID to lesson and category
 const readingToLessonCategory = {
@@ -15,80 +16,6 @@ const readingToLessonCategory = {
   7: { lesson: 6, category: 1 },
 };
 
-const thirdReadingAnswers = {
-  "q1-1": false,
-  "q1-2": true,
-  "q1-3": true,
-  "q1-4": false,
-  "q1-5": false,
-  "q2-1": "SPOTLIGHT HOG",
-  "q2-2": "GOSSIP",
-  "q2-3": "CALM",
-  "q2-4": "BELLYACHER",
-  "q2-5": "NEGATIVITY",
-};
-
-const fourthReadingAnswers = {
-  "q1-1": "1",
-  "q1-2": "2",
-  "q1-3": "3",
-  "q1-4": "4",
-  "q1-5": "5",
-  "q2-1": "false",
-  "q2-2": "true",
-  "q2-3": "false",
-  "q2-4": "false",
-  "q2-5": "true",
-};
-
-const fifthReadingAnswers = {
-  "q1-1": "true",
-  "q1-2": "false",
-  "q1-3": "false",
-  "q1-4": "true",
-  "q1-5": "false",
-  "q2-1": "1",
-  "q2-2": "2",
-  "q2-3": "3",
-  "q2-4": "4",
-  "q2-5": "5",
-};
-
-const sixthReadingAnswers = {
-  "q1-1": "1",
-  "q1-2": "2",
-  "q1-3": "3",
-  "q1-4": "4",
-  "q1-5": "5",
-  "q2-1": "false",
-  "q2-2": "true",
-  "q2-3": "false",
-  "q2-4": "true",
-  "q2-5": "false",
-  "q3-1": "EMOTIONAL SYMPTOMS",
-  "q3-2": "COGNITIVE-BEHAVIORAL THERAPY",
-  "q3-3": "PARENTAL DIVORCE",
-  "q3-4": "HEALTHY HABITS",
-};
-
-const seventhReadingAnswers = {
-  "q1-1": "false",
-  "q1-2": "true",
-  "q1-3": "false",
-  "q1-4": "true",
-  "q1-5": "false",
-  "q1-6": "true",
-  "q1-7": "false",
-  "q1-8": "true",
-  "q1-9": "false",
-  "q1-10": "true",
-  "q2-1": "B",
-  "q2-2": "A",
-  "q2-3": "C",
-  "q2-4": "D",
-  "q2-5": "E",
-};
-
 const checkFirstReading = async (body, user) => {
   try {
     const { emma, carlos, fatima, liam, sofia, time } = body;
@@ -96,14 +23,7 @@ const checkFirstReading = async (body, user) => {
       throw new Error("All fields are required");
     }
 
-    const correctAnswers = {
-      emma: "1",
-      carlos: "2",
-      fatima: "3",
-      liam: "4",
-      sofia: "5",
-    };
-
+    const correctAnswers = getAnswerKeyForReading(1);
     const score = Object.keys(correctAnswers).reduce((acc, key) => {
       return acc + (body[key] === correctAnswers[key] ? 1 : 0);
     }, 0);
@@ -142,16 +62,7 @@ const checkSecondReading = async (body, user) => {
       return acc;
     }, {});
 
-    const correctAnswers = {
-      0: 2,
-      1: 3,
-      2: 5,
-      3: 6,
-      4: 7,
-      5: 1,
-      6: 4,
-    };
-
+    const correctAnswers = getAnswerKeyForReading(2);
     const score = Object.keys(correctAnswers).reduce((acc, key) => {
       return acc + (answers[key] === correctAnswers[key] ? 1 : 0);
     }, 0);
@@ -184,6 +95,7 @@ const checkThirdReading = async (body, user) => {
     if (!time) {
       throw new Error("All fields are required");
     }
+    const thirdReadingAnswers = getAnswerKeyForReading(3);
     const keys = Object.keys(thirdReadingAnswers);
     for (const key of keys) {
       if (!answers[key]) {
@@ -232,6 +144,7 @@ const checkFourthReading = async (body, user) => {
     if (!time) {
       throw new Error("All fields are required");
     }
+    const fourthReadingAnswers = getAnswerKeyForReading(4);
     const keys = Object.keys(fourthReadingAnswers);
 
     for (const key of keys) {
@@ -274,6 +187,7 @@ const checkFifthReading = async (body, user) => {
     if (!time) {
       throw new Error("All fields are required");
     }
+    const fifthReadingAnswers = getAnswerKeyForReading(5);
     const keys = Object.keys(fifthReadingAnswers);
 
     for (const key of keys) {
@@ -316,6 +230,7 @@ const checkSixthReading = async (body, user) => {
     if (!time) {
       throw new Error("All fields are required");
     }
+    const sixthReadingAnswers = getAnswerKeyForReading(6);
     const keys = Object.keys(sixthReadingAnswers);
 
     for (const key of keys) {
@@ -358,6 +273,7 @@ const checkSeventhReading = async (body, user) => {
     if (!time) {
       throw new Error("All fields are required");
     }
+    const seventhReadingAnswers = getAnswerKeyForReading(7);
     const keys = Object.keys(seventhReadingAnswers);
 
     for (const key of keys) {
