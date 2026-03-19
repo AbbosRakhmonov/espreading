@@ -149,6 +149,13 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
               these stages can help us cope with difficult emotions and support
               others going through tough times.
             </Typography>
+            <Box sx={{ px: 3, pb: 2 }}>
+              <CustomAudio
+                audioUrl="/audios/Grief.  (Main idea)-enhanced-v2.wav"
+                type="audio/wav"
+              />
+            </Box>
+
             <Typography
               variant="h6"
               sx={{
@@ -173,6 +180,13 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
               as a defense mechanism to protect us from overwhelming emotions.
               It gives the mind time to adjust to the reality of the loss.
             </Typography>
+            <Box sx={{ px: 3, pb: 2 }}>
+              <CustomAudio
+                audioUrl="/audios/1.Denial.  What does it mean-enhanced-v2.wav"
+                type="audio/wav"
+              />
+            </Box>
+
             <Typography
               variant="h6"
               sx={{
@@ -198,6 +212,13 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
               While it can be uncomfortable, it is an important part of the
               healing process.
             </Typography>
+            <Box sx={{ px: 3, pb: 2 }}>
+              <CustomAudio
+                audioUrl="/audios/2.Anger. Is it a painful time-enhanced-v2.wav"
+                type="audio/wav"
+              />
+            </Box>
+
             <Typography
               variant="h6"
               sx={{

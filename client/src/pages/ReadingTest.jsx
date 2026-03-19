@@ -71,7 +71,7 @@ const ReadingTest = () => {
   }, [reading]);
 
   return (
-    <Box sx={{ position: "relative" }}>
+    <Box sx={{ position: "relative", userSelect: "text" }}>
       <Suspense fallback={<div>Loading...</div>}>
         {!loading && (
           <reading.reading

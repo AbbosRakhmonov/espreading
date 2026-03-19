@@ -646,8 +646,32 @@ async function seed() {
   // ── Load names ──────────────────────────────────────────────────────────────
   const wb = xlsx.readFile(XLSX_PATH);
   const ws = wb.Sheets[wb.SheetNames[0]];
-  const rows = xlsx.utils.sheet_to_json(ws, { header: 1 }).slice(1); // skip header row
-  console.log(`📋  Loaded ${rows.length} names from xlsx`);
+  const allRows = xlsx.utils.sheet_to_json(ws, { header: 1 }).slice(1); // skip header row
+  console.log(`📋  Loaded ${allRows.length} names from xlsx`);
+
+  // ── Pick 160 students: 80 boys + 80 girls ────────────────────────────────────
+  const hasGenderCol = allRows[0] && allRows[0].length >= 3;
+  let selectedRows;
+  if (hasGenderCol) {
+    const boys  = allRows.filter((r) => /^m/i.test(String(r[2] ?? "")));
+    const girls = allRows.filter((r) => /^f/i.test(String(r[2] ?? "")));
+    selectedRows = [
+      ...shuffle(boys).slice(0, 80),
+      ...shuffle(girls).slice(0, 80),
+    ];
+    console.log(`👫  Picked 80 boys + 80 girls from gender column`);
+  } else {
+    // No gender column — assume alternating order (odd=boy, even=girl) or just shuffle
+    const odds  = allRows.filter((_, i) => i % 2 === 0);
+    const evens = allRows.filter((_, i) => i % 2 !== 0);
+    selectedRows = [
+      ...shuffle(odds).slice(0, 80),
+      ...shuffle(evens).slice(0, 80),
+    ];
+    console.log(`👫  Picked 80 + 80 (alternating rows, no gender column detected)`);
+  }
+  selectedRows = shuffle(selectedRows); // mix them together
+  console.log(`✅  Total to seed: ${selectedRows.length} students\n`);
 
   // ── Pre-hash password (insertMany bypasses the pre-save hook) ───────────────
   console.log("🔐  Hashing password…");
@@ -655,7 +679,7 @@ async function seed() {
 
   // ── Build user documents with unique emails ──────────────────────────────────
   const emailSeen = {};
-  const userDocs = rows.map(([firstName, lastName]) => {
+  const userDocs = selectedRows.map(([firstName, lastName]) => {
     const base = toEmail(firstName, lastName);
     emailSeen[base] = (emailSeen[base] || 0) + 1;
     const email =

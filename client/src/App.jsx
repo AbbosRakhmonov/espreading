@@ -31,6 +31,7 @@ import Register from "./pages/Register";
 import StudentDashboard from "./pages/StudentDashboard";
 import Questionnaire from "./pages/Questionnaire";
 import Unauthorized from "./pages/Unauthorized";
+import TTSPopover from "./components/TTSPopover";
 import theme from "./theme";
 
 const BgVideoLayout = ({ children, user, showVideo = true }) => {
@@ -103,6 +104,7 @@ function AppRoutes() {
 
   return (
     <>
+      <TTSPopover />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route
