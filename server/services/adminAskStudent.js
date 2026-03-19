@@ -13,10 +13,14 @@ const { getReadingMeta } = require("../utils/readingCatalog");
 const { buildAdminStudentSystemPrompt } = require("../utils/aiPrompts");
 
 async function buildStudentContextString(studentId) {
-  const student = await User.findById(studentId).select("fullName email university createdAt").lean();
+  const student = await User.findById(studentId)
+    .select("fullName email university createdAt")
+    .lean();
   if (!student) return null;
 
-  const readings = await Reading.find({ user: studentId }).sort({ completedAt: -1 }).lean();
+  const readings = await Reading.find({ user: studentId })
+    .sort({ completedAt: -1 })
+    .lean();
   const completed = readings.filter((r) => r.completed);
   const readingSummary =
     completed
@@ -53,14 +57,22 @@ async function buildStudentContextString(studentId) {
       ? ` Recent student questions: ${recentExamples.map((t) => `"${t}"`).join(" | ")}.`
       : "";
     aiSummaryParts.push(
-      `${title}: ${totalCount} messages (${userCount} from student), mode ${conv.mode || "n/a"}.${examplesBlock}`
+      `${title}: ${totalCount} messages (${userCount} from student), mode ${conv.mode || "n/a"}.${examplesBlock}`,
     );
   }
-  const aiSummary = aiSummaryParts.length ? aiSummaryParts.join("\n") : "No AI help used yet.";
+  const aiSummary = aiSummaryParts.length
+    ? aiSummaryParts.join("\n")
+    : "No AI help used yet.";
 
   let questionnaireInfo = "Questionnaire: not submitted.";
-  const pre = await ReadingStrategy.findOne({ user: studentId, type: "pre" }).lean();
-  const post = await ReadingStrategy.findOne({ user: studentId, type: "post" }).lean();
+  const pre = await ReadingStrategy.findOne({
+    user: studentId,
+    type: "pre",
+  }).lean();
+  const post = await ReadingStrategy.findOne({
+    user: studentId,
+    type: "post",
+  }).lean();
   if (pre) questionnaireInfo = "Pre-questionnaire: submitted.";
   if (post) questionnaireInfo += " Post-questionnaire: submitted.";
 
@@ -95,10 +107,10 @@ async function adminAskAboutStudent(studentId, messages) {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-5.4-mini",
       messages: [{ role: "system", content: systemContent }, ...messages],
-      max_tokens: 800,
-      temperature: 0.3,
+      max_tokens: 2000,
+      temperature: 1,
     });
     const content = completion.choices[0]?.message?.content?.trim() || "";
     return { message: { role: "assistant", content } };
