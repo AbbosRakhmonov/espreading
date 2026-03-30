@@ -110,6 +110,10 @@ const First = ({ completed = false, score = 0, answers = {}, time = 0 }) => {
               sacrificing professionalism. Why is knowing how to deal with
               difficult coworkers important?{" "}
             </Typography>
+            <CustomAudio
+              audioUrl="/audios/5 types of difficult people-enhanced-v2.wav"
+              type="audio/wav"
+            />
             <Typography
               variant="subtitle1"
               gutterBottom

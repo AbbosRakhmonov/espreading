@@ -244,6 +244,12 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
               Bargaining reflects our desire to make sense of the loss and find
               a way to ease the pain.
             </Typography>
+            <Box sx={{ px: 3, pb: 2 }}>
+              <CustomAudio
+                audioUrl="/audios/3.Bargaining. Explain this stage.-enhanced-v2.wav"
+                type="audio/wav"
+              />
+            </Box>
             <Typography
               variant="h6"
               sx={{
@@ -269,6 +275,12 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
               these feelings and seeking support can help people navigate this
               stage.
             </Typography>
+            <Box sx={{ px: 3, pb: 2 }}>
+              <CustomAudio
+                audioUrl="/audios/4. Depression. (Withdraw)-enhanced-v2.wav"
+                type="audio/wav"
+              />
+            </Box>
             <Typography
               variant="h6"
               sx={{
@@ -293,6 +305,12 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
               Instead, they find ways to move forward, cherishing the memories
               while embracing life again.
             </Typography>
+            <Box sx={{ px: 3, pb: 2 }}>
+              <CustomAudio
+                audioUrl="/audios/5. Acceptance.  (Cherishing memories)-enhanced-v2.wav"
+                type="audio/wav"
+              />
+            </Box>
             <Typography
               variant="h6"
               sx={{
@@ -331,6 +349,12 @@ function First({ completed = false, score = 0, answers = {}, time = 0 }) {
               about forgetting but learning to live with loss while finding
               strength to move forward.
             </Typography>
+            <Box sx={{ px: 3, pb: 2 }}>
+              <CustomAudio
+                audioUrl="/audios/Do all people experience stages of Grief-enhanced-v2.wav"
+                type="audio/wav"
+              />
+            </Box>
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>

@@ -1,0 +1,21 @@
+{
+  "name": "espreading",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "repository": "https://github.com/AbbosRakhmonov/espreading.git",
+  "author": "AbbosRakhmonov <abbos.raxmonov.2001@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "concurrently \"yarn workspace server dev\" \"yarn workspace client dev\"",
+    "build": "yarn workspace client build",
+    "start": "yarn workspace server start",
+    "install:all": "yarn install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
