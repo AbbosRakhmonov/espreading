@@ -16,6 +16,15 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET  }}
           tags: tag:ci
 
+      - name: Check Tailscale connectivity
+        run: |
+          echo "Runner Tailscale IP:"
+          tailscale ip -4
+          echo "Tailscale status:"
+          tailscale status
+          echo "Pinging server..."
+          tailscale ping ${{ secrets.SERVER_HOST }} || true
+
       - name: Deploy
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -27,6 +36,7 @@ jobs:
           ssh -i ~/.ssh/deploy_key \
             -o StrictHostKeyChecking=no \
             -o UserKnownHostsFile=/dev/null \
+            -o ConnectTimeout=15 \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
             "set -e
             cd /mnt/storage/projects/espreading
