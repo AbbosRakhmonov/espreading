@@ -1,0 +1,43 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Tailscale ulash
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID  }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET  }}
+          tags: tag:ci
+
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /mnt/storage/projects/espreading
+
+            echo ">>> Git pull..."
+            git pull origin master
+
+            echo ">>> Client build..."
+            cd client
+            yarn
+            yarn build
+            cd ..
+
+            echo ">>> Server dependencies..."
+            cd server
+            yarn
+            cd ..
+
+            echo ">>> Server restart..."
+            pm2 restart espreading --update-env
