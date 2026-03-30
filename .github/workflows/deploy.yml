@@ -38,13 +38,14 @@ jobs:
             -o UserKnownHostsFile=/dev/null \
             -o ConnectTimeout=15 \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
-            "set -e
+            'set -e
+            export PATH="$PATH:/usr/local/bin:$HOME/.yarn/bin:$HOME/.nvm/versions/node/$(ls $HOME/.nvm/versions/node | tail -1)/bin"
             cd /mnt/storage/projects/espreading
-            echo '>>> Git pull...'
+            echo ">>> Git pull..."
             git pull origin master
-            echo '>>> Client build...'
+            echo ">>> Client build..."
             cd client && yarn && yarn build && cd ..
-            echo '>>> Server dependencies...'
+            echo ">>> Server dependencies..."
             cd server && yarn && cd ..
-            echo '>>> Server restart...'
-            pm2 restart espreading --update-env"
+            echo ">>> Server restart..."
+            pm2 restart espreading --update-env'
